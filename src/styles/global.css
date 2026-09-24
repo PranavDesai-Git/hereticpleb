@@ -158,7 +158,7 @@ hr {
 }
 
 .social-links a {
-  font-family: sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -207,7 +207,7 @@ html.light-theme .timeline-sidebar {
 
 .timeline-sidebar a {
   text-decoration: none;
-  font-family: sans-serif;
+  font-family: var(--font-body);
   font-size: 1.1rem;
   color: var(--text-color);
   opacity: 0.5;
@@ -231,7 +231,7 @@ html.light-theme .timeline-sidebar {
   font-size: 1.3rem;
   margin-top: 0;
   margin-bottom: 1.5rem;
-  font-family: sans-serif;
+  font-family: var(--font-body);
 }
 
 .timeline-post {
@@ -374,7 +374,7 @@ li {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.85rem;
   line-height: 1.4;
-  font-family: sans-serif;
+  font-family: var(--font-body);
 }
 
 html.light-theme .toc-mobile {
@@ -517,7 +517,7 @@ html.light-theme .toc-mobile {
   opacity: 0;
   pointer-events: none;
   transition: all 0.3s ease;
-  font-family: sans-serif;
+  font-family: var(--font-body);
   line-height: 1;
 }
 
@@ -626,7 +626,7 @@ html.light-theme #theme-toggle::before {
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
-  font-family: sans-serif;
+  font-family: var(--font-body);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s, background 0.2s;
@@ -679,7 +679,7 @@ html.light-theme .nav-links a {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
-  font-family: sans-serif;
+  font-family: var(--font-body);
 }
 
 .nav-title {
