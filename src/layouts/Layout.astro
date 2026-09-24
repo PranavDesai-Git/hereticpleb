@@ -6,6 +6,10 @@ import '../styles/global.css';
 import fs from 'node:fs';
 import { ClientRouter } from 'astro:transitions';
 
+import texturina400 from '@fontsource/texturina/files/texturina-latin-400-normal.woff2';
+import texturina700 from '@fontsource/texturina/files/texturina-latin-700-normal.woff2';
+import unifraktur700 from '@fontsource/unifrakturcook/files/unifrakturcook-latin-700-normal.woff2';
+
 const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
 const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
 
@@ -48,6 +52,10 @@ if (!readingTime && frontmatter?.file) {
 		<meta name="description" content="Unconventional thoughts on faith and dissent." />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
+
+		<link rel="preload" as="font" type="font/woff2" href={texturina400} crossorigin="anonymous" />
+		<link rel="preload" as="font" type="font/woff2" href={texturina700} crossorigin="anonymous" />
+		<link rel="preload" as="font" type="font/woff2" href={unifraktur700} crossorigin="anonymous" />
 
 		<meta name="generator" content={Astro.generator} />
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.com")} />
