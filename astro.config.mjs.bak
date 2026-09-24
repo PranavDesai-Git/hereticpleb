@@ -1,0 +1,17 @@
+import { defineConfig } from 'astro/config';
+
+function remarkReadingTime() {
+  return (tree, file) => {
+    // file.value contains the raw markdown string
+    const text = file.value;
+    const wordCount = text.split(/\s+/).length;
+    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+    file.data.astro.frontmatter.readingTime = readingTime;
+  };
+}
+
+export default defineConfig({
+  markdown: {
+    remarkPlugins: [remarkReadingTime],
+  },
+});
