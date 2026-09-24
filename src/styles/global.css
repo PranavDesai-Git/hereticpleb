@@ -140,6 +140,39 @@ hr {
 
 
 
+/* Home Header & Social Links */
+.home-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.home-header h1 {
+  margin-bottom: 0.5rem;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  opacity: 1;
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
 /* Timeline Layout for Homepage */
 .timeline-layout {
   display: flex;
