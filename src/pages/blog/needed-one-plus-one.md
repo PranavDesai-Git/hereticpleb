@@ -13,7 +13,7 @@ Naturally, I decided to build an evaluator.
 A few days later I implemented closures, a garbage collector, a custom memory allocator, a REPL, an FFI, and a whole bunch of other stuff in C.
 
 [graphLang](https://github.com/PranavDesai-Git/graphLang)
-### THE DATA STRUCTURES ASSIGNMENT
+## THE DATA STRUCTURES ASSIGNMENT
 
 The problem was: 
 Evaluate 1 + 1 + 1 to 3 using a binary tree.
@@ -97,7 +97,7 @@ Expr ::= Func Expr Expr
 
 The evaluator doesn't need to know what a function does. It only needs to know how to apply one.
 
-### We can add vars to this. It wouldn't be a big change 
+## We can add vars to this. It wouldn't be a big change 
 
 Should be a tiny addition, no problem whatsoever. I mean variables are just a hash table lookup that gives you an Expr.
 Oh wait. C doesn't have built-in hash tables.
@@ -123,7 +123,7 @@ Would you look at that! We have variables now that can be passed to functions on
 
 ---
 
-### Actually implementing it in C
+## Actually implementing it in C
 
 Alright then, time to code in C with this plan. Seems simple enough. Just a tagged union.
 
@@ -188,7 +188,7 @@ So, I look up what allocator we can use, again like a caveman, and I decide I wi
 
 ---
 
-### Arena Allocator
+## Arena Allocator
 
 
 The idea of an arena allocator is pretty simple. All you do is take a big chunk of memory at the start, allocate stuff yourself, and then at the end just free the entire block.
@@ -224,7 +224,7 @@ Remember the hashtable we created earlier? It's time to upgrade it.
 
 ---
 
-### Making the Env Table
+## Making the Env Table
 
 
 In the Env table we are storing two things. Vars and
@@ -349,7 +349,7 @@ and...
 **IT CRASHED**
 
 ---
-### UPGRADING THE MEMORY ALLOCATOR
+## UPGRADING THE MEMORY ALLOCATOR
 
 Why? Because our fib(5) spawned **13k nodes**. But our allocator size is only 1024 nodes total!
 You might think "Okay, it's obvious: reallocate the block and grow the size. Have it be a dynamic array"
@@ -433,7 +433,7 @@ We're allocating nodes but never freeing them once their use is over.
 To tackle this problem, I had to build a garbage collector.
 
 ---
-### BUILDING THE GARBAGE COLLECTOR
+## BUILDING THE GARBAGE COLLECTOR
 
 What does it mean to collect garbage?
 
@@ -529,7 +529,7 @@ We can tackle both of these issues.
 
 
 ---
-### What to expect in the next parts
+## What to expect in the next parts
 This has gone on long enough, so I decided to split it into parts.
 
 - how I tackled the speed issue with TCO and better evaluation
@@ -542,7 +542,7 @@ This has gone on long enough, so I decided to split it into parts.
 - added local vars
 - set up stuff for a Cheney's copying collector
 
-### What have we achieved so far?
+## What have we achieved so far?
 - Realized our expression type can be an Algebraic Data Type.
 - Then realized the actual variants are the kinds of data: funcs, vars, literals
 - Then realized vars and funcs aren't really two different things but both are just data
@@ -554,7 +554,7 @@ This has gone on long enough, so I decided to split it into parts.
 
 Overall, I built a Graph Reduction engine
 
-### WAIT. BUT DOES IT EVALUATE 1+1
+## WAIT. BUT DOES IT EVALUATE 1+1
 
 Yeah... I mean, now it does.
 
