@@ -1,0 +1,276 @@
+---
+import '../styles/global.css';
+import fs from 'node:fs';
+import { ClientRouter } from 'astro:transitions';
+
+const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
+const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
+
+
+interface Props {
+	title: string;
+	frontmatter?: any;
+	headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { title, frontmatter, headings } = Astro.props;
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+const pageTitle = frontmatter?.title || title;
+
+let prevPost = null;
+let nextPost = null;
+
+if (frontmatter) {
+	const currentIndex = allPosts.findIndex((p: any) => p.url === Astro.url.pathname);
+	if (currentIndex !== -1) {
+		nextPost = allPosts[currentIndex - 1]; // Newer post is earlier in sorted array
+		prevPost = allPosts[currentIndex + 1]; // Older post is later in sorted array
+	}
+}
+
+let readingTime = frontmatter?.readingTime;
+if (!readingTime && frontmatter?.file) {
+	try {
+		const content = fs.readFileSync(frontmatter.file, 'utf-8');
+		const wordCount = content.trim().split(/\s+/).length || 1;
+		readingTime = Math.max(1, Math.ceil(wordCount / 200));
+	} catch (e) {}
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Unconventional thoughts on faith and dissent." />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Texturina:wght@400;700&display=swap" rel="stylesheet">
+		<meta name="generator" content={Astro.generator} />
+		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.com")} />
+		<title>{pageTitle}</title>
+		<ClientRouter />
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+					return 'light';
+				}
+				return 'dark';
+			})();
+			if (theme === 'light') {
+				document.documentElement.classList.add('light-theme');
+			}
+		</script>
+	</head>
+	<body>
+		<div id="progress-bar"></div>
+		<main>
+			<nav class="site-nav">
+				{!isHome && <a href="/">hereticpleb</a>}
+				<button id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme"></button>
+			</nav>
+			
+			{frontmatter && (
+				<header style="text-align: center; margin-bottom: 3rem;">
+					<h1 style="margin-bottom: 0.5rem;">{frontmatter.title}</h1>
+					<div style="font-style: italic; opacity: 0.7; font-size: 0.9rem;">
+						{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+						{readingTime && <span> • {readingTime} min read</span>}
+					</div>
+				</header>
+			)}
+
+			<div class="article-content">
+				{frontmatter && headings && headings.length > 0 && (
+					<div class="toc-mobile hidden-desktop">
+						<h2>table of contents</h2>
+						<ul class="toc-list">
+							{headings.filter((h: any) => h.depth > 1).map((h: any) => (
+								<li class={`depth-${h.depth}`}>
+									<a href={`#${h.slug}`}>{h.text}</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
+				<slot />
+				
+				{frontmatter && (prevPost || nextPost) && (
+					<div class="post-navigation">
+						<hr />
+						<div class="nav-links">
+							{prevPost && (
+								<a href={prevPost.url} class="nav-prev">
+									<span class="nav-label">← Previous Article</span>
+									<span class="nav-title">{prevPost.frontmatter.title}</span>
+								</a>
+							)}
+							{nextPost && (
+								<a href={nextPost.url} class="nav-next">
+									<span class="nav-label">Next Article →</span>
+									<span class="nav-title">{nextPost.frontmatter.title}</span>
+								</a>
+							)}
+						</div>
+					</div>
+				)}
+			</div>
+
+			{frontmatter && headings && headings.length > 0 && (
+				<aside class="toc-desktop hidden-mobile">
+					<h2>Contents</h2>
+					<ul class="toc-list">
+						{headings.filter((h: any) => h.depth > 1).map((h: any) => (
+							<li class={`depth-${h.depth}`}>
+								<a href={`#${h.slug}`}>{h.text}</a>
+							</li>
+						))}
+					</ul>
+				</aside>
+			)}
+		</main>
+
+		<button id="back-to-top" aria-label="Back to top">↑</button>
+
+		<div id="search-modal" class="search-modal hidden">
+			<div class="search-modal-content">
+				<input type="text" id="search-input" placeholder="Search articles... (Cmd/Ctrl + K to close)" />
+				<ul id="search-results"></ul>
+			</div>
+		</div>
+
+		<script>
+			document.addEventListener('astro:page-load', () => {
+			const progressBar = document.getElementById('progress-bar');
+			const topBtn = document.getElementById('back-to-top');
+
+			window.addEventListener('scroll', () => {
+				// Progress Bar
+				const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+				const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+				const scrolled = (winScroll / height) * 100;
+				if (progressBar) progressBar.style.width = scrolled + '%';
+
+				// Back to top button
+				if (winScroll > 500) {
+					if (topBtn) {
+						topBtn.style.opacity = '0.7';
+						topBtn.style.pointerEvents = 'auto';
+					}
+				} else {
+					if (topBtn) {
+						topBtn.style.opacity = '0';
+						topBtn.style.pointerEvents = 'none';
+					}
+				}
+			});
+
+			if (topBtn) {
+				topBtn.addEventListener('click', () => {
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				});
+			}
+
+			const themeToggle = document.getElementById('theme-toggle');
+			if (themeToggle) {
+				themeToggle.addEventListener('click', () => {
+					document.documentElement.classList.toggle('light-theme');
+					const isLight = document.documentElement.classList.contains('light-theme');
+					localStorage.setItem('theme', isLight ? 'light' : 'dark');
+				});
+			}
+				// Scroll-Spy TOC
+				const headings = document.querySelectorAll('.article-content h2, .article-content h3');
+				const tocLinks = document.querySelectorAll('.toc-list a');
+				if (headings.length && tocLinks.length) {
+					const observer = new IntersectionObserver(entries => {
+						entries.forEach(entry => {
+							if (entry.isIntersecting) {
+								tocLinks.forEach(link => {
+									link.classList.remove('active');
+									if (link.getAttribute('href') === '#' + entry.target.id) {
+										link.classList.add('active');
+									}
+								});
+							}
+						});
+					}, { rootMargin: '-10% 0px -80% 0px' });
+					headings.forEach(h => observer.observe(h));
+				}
+
+				// Copy Button for Code Blocks
+				const preBlocks = document.querySelectorAll('pre');
+				preBlocks.forEach(pre => {
+					if (pre.querySelector('.copy-btn')) return;
+					pre.style.position = 'relative';
+					const btn = document.createElement('button');
+					btn.className = 'copy-btn';
+					btn.textContent = 'Copy';
+					btn.addEventListener('click', () => {
+						const code = pre.querySelector('code')?.innerText || pre.innerText;
+						navigator.clipboard.writeText(code).then(() => {
+							btn.textContent = 'Copied!';
+							setTimeout(() => btn.textContent = 'Copy', 2000);
+						});
+					});
+					pre.appendChild(btn);
+				});
+
+				// Quick Search Modal
+				let searchData = null;
+				const searchModal = document.getElementById('search-modal');
+				const searchInput = document.getElementById('search-input');
+				const searchResults = document.getElementById('search-results');
+
+				const handleKeydown = (e) => {
+					if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+						e.preventDefault();
+						if (searchModal) {
+							searchModal.classList.toggle('hidden');
+							if (!searchModal.classList.contains('hidden')) {
+								searchInput.focus();
+								if (!searchData) {
+									fetch('/search.json').then(res => res.json()).then(data => searchData = data);
+								}
+							}
+						}
+					}
+					if (e.key === 'Escape' && searchModal && !searchModal.classList.contains('hidden')) {
+						searchModal.classList.add('hidden');
+					}
+				};
+
+				document.removeEventListener('keydown', handleKeydown);
+				document.addEventListener('keydown', handleKeydown);
+
+				if (searchModal) {
+					searchModal.addEventListener('click', (e) => {
+						if (e.target === searchModal) searchModal.classList.add('hidden');
+					});
+				}
+
+				if (searchInput && searchResults) {
+					searchInput.addEventListener('input', (e) => {
+						const q = e.target.value.toLowerCase();
+						if (!q) {
+							searchResults.innerHTML = '';
+							return;
+						}
+						const filtered = searchData?.filter(post => post.title.toLowerCase().includes(q) || (post.description && post.description.toLowerCase().includes(q))) || [];
+						searchResults.innerHTML = filtered.map(post => `
+							<li><a href="${post.url}">
+								<span class="search-title">${post.title}</span>
+								<span class="search-desc">${post.description || ''}</span>
+							</a></li>
+						`).join('');
+					});
+				}
+			});
+		</script>
+	</body>
+</html>
