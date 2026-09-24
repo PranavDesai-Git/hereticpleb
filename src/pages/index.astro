@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+const postsObj = import.meta.glob('../pages/blog/*.md', { eager: true }) as Record<string, any>;
+const postsRawObj = import.meta.glob('../pages/blog/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+
+const posts = Object.entries(postsObj).map(([path, post]) => {
+	const rawContent = postsRawObj[path] || '';
+	const wordCount = rawContent.trim().split(/\s+/).length || 1;
+	const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+	return { ...post, readingTime };
+});
+posts.sort((a, b) => Date.parse(b.frontmatter.date || new Date()) - Date.parse(a.frontmatter.date || new Date()));
+
+const postsByYear = {};
+posts.forEach((post) => {
+	const date = new Date(post.frontmatter.date || new Date());
+	const year = date.getFullYear();
+	if (!postsByYear[year]) postsByYear[year] = [];
+	postsByYear[year].push(post);
+});
+const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
+---
+
+<Layout title="hereticpleb">
+	<h1>hereticpleb</h1>
+
+	<div class="timeline-layout">
+		<aside class="timeline-sidebar hidden-mobile">
+			<ul>
+				{years.map(year => (
+					<li><a href={`#year-${year}`}>{year}</a></li>
+				))}
+			</ul>
+		</aside>
+
+		<div class="timeline-content">
+			{years.map(year => (
+				<section id={`year-${year}`} class="year-section">
+					<h2 class="year-heading">{year}</h2>
+					<div class="posts-in-year">
+						{postsByYear[year].map((post: any) => (
+							<article class="timeline-post">
+								{post.frontmatter.image && (
+									<div class="post-thumbnail">
+										<img src={post.frontmatter.image} alt={post.frontmatter.title} />
+									</div>
+								)}
+								<div class="post-content">
+									<h3><a href={post.url}>{post.frontmatter.title}</a></h3>
+									{post.frontmatter.description && (
+										<p class="post-description">{post.frontmatter.description}</p>
+									)}
+								</div>
+							</article>
+						))}
+					</div>
+				</section>
+			))}
+		</div>
+	</div>
+</Layout>
