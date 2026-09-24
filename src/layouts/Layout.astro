@@ -1,4 +1,7 @@
 ---
+import '@fontsource/unifrakturcook/700.css';
+import '@fontsource/texturina/400.css';
+import '@fontsource/texturina/700.css';
 import '../styles/global.css';
 import fs from 'node:fs';
 import { ClientRouter } from 'astro:transitions';
@@ -45,9 +48,7 @@ if (!readingTime && frontmatter?.file) {
 		<meta name="description" content="Unconventional thoughts on faith and dissent." />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Texturina:wght@400;700&display=swap" rel="stylesheet">
+
 		<meta name="generator" content={Astro.generator} />
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.com")} />
 		<title>{pageTitle}</title>
