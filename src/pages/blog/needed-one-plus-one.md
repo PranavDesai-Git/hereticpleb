@@ -2,6 +2,8 @@
 layout: ../../layouts/Layout.astro
 title: "Needed 1+1, Built a Functional Programming Language"
 date: 2026-09-16T06:12:00+05:30
+description: "A deep dive into converting a simple arithmetic expression into a binary tree, leading to a
+  custom language in C."
 ---
 
 ---

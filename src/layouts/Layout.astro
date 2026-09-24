@@ -23,6 +23,10 @@ interface Props {
 const { title, frontmatter, headings } = Astro.props;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 const pageTitle = frontmatter?.title || title;
+const description = frontmatter?.description || "Unconventional thoughts on faith and dissent.";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hereticpleb.vercel.app');
+const ogType = Astro.url.pathname.startsWith('/blog/') ? 'article' : 'website';
+const ogImage = frontmatter?.image ? new URL(frontmatter.image, canonicalURL) : new URL('/favicon.png', canonicalURL);
 
 let prevPost = null;
 let nextPost = null;
@@ -49,7 +53,27 @@ if (!readingTime && frontmatter?.file) {
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content={frontmatter?.description || "Unconventional thoughts on faith and dissent."} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalURL} />
+		<meta property="twitter:title" content={pageTitle} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={ogImage} />
+		<meta property="twitter:creator" content="@prnvdsi" />
+
+		<!-- Theme & Author -->
+		<meta name="author" content="Pranav Desai" />
+		<meta name="theme-color" content="#000000" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 
