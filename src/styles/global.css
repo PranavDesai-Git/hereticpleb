@@ -17,6 +17,8 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: rgba(128, 128, 128, 0.3) var(--bg-color);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Scrollbar Customization (Webkit) */
@@ -282,14 +284,20 @@ pre {
   background-color: #000000 !important;
   padding: 1.5rem;
   overflow-x: auto;
-  font-family: 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', 'MesloLGS NF', monospace;
+  font-family: 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', 'MesloLGS NF', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.95rem;
   line-height: 1.4;
   margin-bottom: 2rem;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  letter-spacing: normal;
+  tab-size: 4;
 }
 
 code {
-  font-family: 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', 'MesloLGS NF', monospace;
+  font-family: 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', 'MesloLGS NF', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   background-color: #000000 !important;
   padding: 0.2rem 0.4rem;
   font-size: 0.95rem;
