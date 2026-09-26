@@ -129,7 +129,7 @@ Would you look at that! We have variables now that can be passed to functions on
 
 Alright then, time to code in C with this plan. Seems simple enough. Just a tagged union.
 
-```C
+```c
 typedef enum {
     LITERAL,
     VAR,
@@ -197,22 +197,22 @@ The idea of an arena allocator is pretty simple. All you do is take a big chunk 
 
 So my arena allocator would just be:
 
-```C
+```c
     #define SIZE 1024
     Node arena[SIZE]
 ```
 
 And when we allocate a node, we can just keep track of the top using.
-```C
+```c
     int top = 0;
 ```
 When we want to allocate a node, we just return.
-```C 
+```c
     &arena[top++];
 ```
 
 I wrote the allocator and defined a C function to allocate nodes:
-```C 
+```c
 Node *allocNode();
 ```
 
@@ -290,7 +290,7 @@ Alright then, let's actually implement this in C. So what do we need?
 
 If variables and functions are both values, the environment needs to map names to nodes.
 So now we can create our env entry as
-```C 
+```c
 typedef struct EnvEntry {
     char *key;
     Node *val;
@@ -305,7 +305,7 @@ But what *is* val?
 Val is a Node! But our Node doesn't know about closures or native functions yet.
 So let's add those to our node definition from before.
 
-```C 
+```c
 struct Node {
     struct Node *left;
     struct Node *right;
@@ -367,7 +367,7 @@ We can build a linked list of our allocated blocks. When we run out of space in 
 
 This is called a chunk allocator! Each of our blocks is a chunk that stores the memory, and we chain them together like a linked list with a next pointer.
 
-```C
+```c
 typedef struct Chunk {
     Node nodes[CHUNK_SIZE];
     struct Chunk *next;

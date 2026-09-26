@@ -315,6 +315,7 @@ html.light-theme .post-thumbnail img {
 /* Markdown Elements */
 pre {
   background-color: #000000 !important;
+  color: #e5e5e5;
   padding: 1.5rem;
   overflow-x: auto;
   font-family: 'FiraCode Nerd Font', 'JetBrainsMono Nerd Font', 'Hack Nerd Font', 'MesloLGS NF', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
