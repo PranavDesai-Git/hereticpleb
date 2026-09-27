@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   const { path } = req.query;
   if (!path) return res.status(400).json({ error: "missing path" });
   
-  const gcUrl = `https://hereticpleb.goatcounter.com/counter/${encodeURIComponent(path)}.json`;
+  const gcUrl = `https://hereticpleb.goatcounter.com/counter/${encodeURIComponent(path)}.json?nocache=${Date.now()}`;
   
   try {
     const gcRes = await fetch(gcUrl);
