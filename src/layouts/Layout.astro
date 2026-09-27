@@ -453,6 +453,7 @@ if (!readingTime && frontmatter?.file) {
 						.then(res => res.json())
 						.then(data => {
 							if (data && data.count) {
+								console.log('GoatCounter view count for this page:', data.count);
 								const count = parseInt(data.count.replace(/,/g, ''), 10) || 0;
 								if (count >= 50) {
 									gcViewCount.textContent = ` • ${data.count} views`;
