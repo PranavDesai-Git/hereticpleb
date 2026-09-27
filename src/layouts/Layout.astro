@@ -460,7 +460,9 @@ if (!readingTime && frontmatter?.file) {
 								}
 							}
 						})
-						.catch(err => console.error('Error fetching GoatCounter views:', err));
+						.catch(() => {
+							// Silently ignore errors from adblockers (ERR_BLOCKED_BY_CLIENT)
+						});
 				}
 			});
 		</script>
