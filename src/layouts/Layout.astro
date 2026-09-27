@@ -85,6 +85,7 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.com")} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
+		<script data-goatcounter="https://hereticpleb.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 		<script is:inline>
 			const theme = (() => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -114,6 +115,7 @@ if (!readingTime && frontmatter?.file) {
 					<div style="font-style: italic; opacity: 0.7; font-size: 0.9rem;">
 						{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
 						{readingTime && <span> • {readingTime} min read</span>}
+						<span class="gc-view-count" style="display: none;"></span>
 					</div>
 				</header>
 			)}
@@ -254,6 +256,145 @@ if (!readingTime && frontmatter?.file) {
 					pre.appendChild(btn);
 				});
 
+				// Fullscreen Image Click
+				const images = document.querySelectorAll('.article-content img');
+				images.forEach(img => {
+					img.style.cursor = 'zoom-in';
+					img.addEventListener('click', () => {
+						const overlay = document.createElement('div');
+						overlay.style.position = 'fixed';
+						overlay.style.top = '0';
+						overlay.style.left = '0';
+						overlay.style.width = '100vw';
+						overlay.style.height = '100vh';
+						overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+						overlay.style.zIndex = '9999';
+						overlay.style.display = 'flex';
+						overlay.style.justifyContent = 'center';
+						overlay.style.alignItems = 'center';
+						
+						const closeBtn = document.createElement('button');
+						closeBtn.innerHTML = '&times;';
+						closeBtn.style.position = 'absolute';
+						closeBtn.style.top = '20px';
+						closeBtn.style.right = '30px';
+						closeBtn.style.fontSize = '40px';
+						closeBtn.style.color = '#fff';
+						closeBtn.style.background = 'transparent';
+						closeBtn.style.border = 'none';
+						closeBtn.style.cursor = 'pointer';
+						closeBtn.style.lineHeight = '1';
+						closeBtn.style.padding = '10px';
+						closeBtn.style.zIndex = '10000';
+						closeBtn.setAttribute('aria-label', 'Close fullscreen image');
+						
+						const zoomInBtn = document.createElement('button');
+						zoomInBtn.innerHTML = '+';
+						zoomInBtn.style.position = 'absolute';
+						zoomInBtn.style.top = '20px';
+						zoomInBtn.style.right = '110px';
+						zoomInBtn.style.fontSize = '40px';
+						zoomInBtn.style.color = '#fff';
+						zoomInBtn.style.background = 'transparent';
+						zoomInBtn.style.border = 'none';
+						zoomInBtn.style.cursor = 'pointer';
+						zoomInBtn.style.lineHeight = '1';
+						zoomInBtn.style.padding = '10px';
+						zoomInBtn.style.zIndex = '10000';
+						zoomInBtn.setAttribute('aria-label', 'Zoom in');
+
+						const zoomOutBtn = document.createElement('button');
+						zoomOutBtn.innerHTML = '&minus;';
+						zoomOutBtn.style.position = 'absolute';
+						zoomOutBtn.style.top = '20px';
+						zoomOutBtn.style.right = '70px';
+						zoomOutBtn.style.fontSize = '40px';
+						zoomOutBtn.style.color = '#fff';
+						zoomOutBtn.style.background = 'transparent';
+						zoomOutBtn.style.border = 'none';
+						zoomOutBtn.style.cursor = 'pointer';
+						zoomOutBtn.style.lineHeight = '1';
+						zoomOutBtn.style.padding = '10px';
+						zoomOutBtn.style.zIndex = '10000';
+						zoomOutBtn.setAttribute('aria-label', 'Zoom out');
+						
+						const clone = document.createElement('img');
+						clone.src = img.src;
+						clone.style.maxWidth = '95vw';
+						clone.style.maxHeight = '95vh';
+						clone.style.objectFit = 'contain';
+						clone.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+						clone.style.cursor = 'grab';
+						clone.style.transition = 'transform 0.1s ease-out';
+						
+						overlay.appendChild(zoomInBtn);
+						overlay.appendChild(zoomOutBtn);
+						overlay.appendChild(closeBtn);
+						overlay.appendChild(clone);
+						document.body.appendChild(overlay);
+						
+						let scale = 1;
+						let isDragging = false;
+						let startX = 0, startY = 0, translateX = 0, translateY = 0;
+						
+						const updateTransform = () => {
+							clone.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+						};
+
+						zoomInBtn.addEventListener('click', (e) => {
+							e.stopPropagation();
+							scale = Math.min(scale + 0.5, 10);
+							updateTransform();
+						});
+
+						zoomOutBtn.addEventListener('click', (e) => {
+							e.stopPropagation();
+							scale = Math.max(scale - 0.5, 0.5);
+							updateTransform();
+						});
+						
+						clone.addEventListener('wheel', (e) => {
+							e.preventDefault();
+							scale += e.deltaY * -0.005;
+							scale = Math.min(Math.max(0.5, scale), 10); // scale between 0.5x and 10x
+							updateTransform();
+						});
+						
+						clone.addEventListener('mousedown', (e) => {
+							e.preventDefault();
+							isDragging = true;
+							startX = e.clientX - translateX;
+							startY = e.clientY - translateY;
+							clone.style.cursor = 'grabbing';
+							clone.style.transition = 'none'; // remove transition for smooth dragging
+						});
+						
+						window.addEventListener('mouseup', () => {
+							if (isDragging) {
+								isDragging = false;
+								clone.style.cursor = 'grab';
+								clone.style.transition = 'transform 0.1s ease-out';
+							}
+						});
+						
+						window.addEventListener('mousemove', (e) => {
+							if (!isDragging) return;
+							e.preventDefault();
+							translateX = e.clientX - startX;
+							translateY = e.clientY - startY;
+							updateTransform();
+						});
+						
+						overlay.addEventListener('click', (e) => {
+							if (e.target === overlay || e.target === closeBtn) {
+								if (document.body.contains(overlay)) {
+									document.body.removeChild(overlay);
+								}
+							}
+						});
+					});
+				});
+
 				// Quick Search Modal
 				let searchData = null;
 				const searchModal = document.getElementById('search-modal');
@@ -302,6 +443,24 @@ if (!readingTime && frontmatter?.file) {
 							</a></li>
 						`).join('');
 					});
+				}
+
+				// Fetch GoatCounter views
+				const gcViewCount = document.querySelector('.gc-view-count');
+				if (gcViewCount) {
+					const path = encodeURIComponent(location.pathname);
+					fetch(`https://hereticpleb.goatcounter.com/counter/${path}.json`)
+						.then(res => res.json())
+						.then(data => {
+							if (data && data.count) {
+								const count = parseInt(data.count.replace(/,/g, ''), 10) || 0;
+								if (count >= 50) {
+									gcViewCount.textContent = ` • ${data.count} views`;
+									gcViewCount.style.display = 'inline';
+								}
+							}
+						})
+						.catch(err => console.error('Error fetching GoatCounter views:', err));
 				}
 			});
 		</script>
