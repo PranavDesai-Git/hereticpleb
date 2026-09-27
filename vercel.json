@@ -5,8 +5,8 @@
       "destination": "https://gc.zgo.at/count.js"
     },
     {
-      "source": "/api/gc/:match*",
-      "destination": "https://hereticpleb.goatcounter.com/:match*"
+      "source": "/api/gc/count",
+      "destination": "https://hereticpleb.goatcounter.com/count"
     }
   ]
 }

@@ -449,7 +449,7 @@ if (!readingTime && frontmatter?.file) {
 				const gcViewCount = document.querySelector('.gc-view-count');
 				if (gcViewCount) {
 					const path = encodeURIComponent(location.pathname);
-					fetch(`/api/gc/counter/${path}.json`)
+					fetch(`/api/gc-counter?path=${path}`)
 						.then(res => res.json())
 						.then(data => {
 							if (data && data.count) {
