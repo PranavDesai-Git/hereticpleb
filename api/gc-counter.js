@@ -2,15 +2,23 @@ export default async function handler(req, res) {
   const { path } = req.query;
   if (!path) return res.status(400).json({ error: "missing path" });
   
-  const gcUrl = `https://hereticpleb.goatcounter.com/counter/${encodeURIComponent(path)}.json?nocache=${Date.now()}`;
+  // The GoatCounter .json endpoint heavily caches 404 responses (0 views) for 4 hours
+  // and ignores cache-busting query strings. 
+  // We fetch the .svg endpoint instead and parse the view count to get live data.
+  const gcUrl = `https://hereticpleb.goatcounter.com/counter/${encodeURIComponent(path)}.svg?nocache=${Date.now()}`;
   
   try {
     const gcRes = await fetch(gcUrl);
     if (!gcRes.ok) {
       return res.status(200).json({ count: "0" });
     }
-    const data = await gcRes.json();
-    return res.status(200).json(data);
+    const svgText = await gcRes.text();
+    // Extract <text id="gcvc-views" ...>740</text>
+    const match = svgText.match(/id="gcvc-views"[^>]*>([\d,]+)<\/text>/);
+    if (match && match[1]) {
+      return res.status(200).json({ count: match[1] });
+    }
+    return res.status(200).json({ count: "0" });
   } catch (error) {
     return res.status(500).json({ error: "Failed to fetch view count" });
   }
