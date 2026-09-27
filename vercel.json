@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/gc/script",
+      "destination": "https://gc.zgo.at/count.js"
+    },
+    {
+      "source": "/api/gc/:match*",
+      "destination": "https://hereticpleb.goatcounter.com/:match*"
+    }
+  ]
+}

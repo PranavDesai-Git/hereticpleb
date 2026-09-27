@@ -85,7 +85,7 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.com")} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
-		<script data-goatcounter="https://hereticpleb.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+		<script data-goatcounter="/api/gc/count" async src="/api/gc/script"></script>
 		<script is:inline>
 			const theme = (() => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
@@ -449,7 +449,7 @@ if (!readingTime && frontmatter?.file) {
 				const gcViewCount = document.querySelector('.gc-view-count');
 				if (gcViewCount) {
 					const path = encodeURIComponent(location.pathname);
-					fetch(`https://hereticpleb.goatcounter.com/counter/${path}.json`)
+					fetch(`/api/gc/counter/${path}.json`)
 						.then(res => res.json())
 						.then(data => {
 							if (data && data.count) {
