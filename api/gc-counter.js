@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
     const svgText = await gcRes.text();
     // Extract <text id="gcvc-views" ...>740</text>
-    const match = svgText.match(/id="gcvc-views"[^>]*>([\d,]+)<\/text>/);
+    const match = svgText.match(/id="gcvc-views"[^>]*>([^<]+)<\/text>/);
     if (match && match[1]) {
       return res.status(200).json({ count: match[1] });
     }
