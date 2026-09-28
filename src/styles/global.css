@@ -578,31 +578,25 @@ img:hover {
   background: none;
   border: none;
   color: var(--text-color);
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   padding: 0.5rem;
   cursor: pointer;
   opacity: 0.85;
   transition: opacity 0.2s ease, color 0.2s ease;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#theme-toggle::before {
-  content: "darkmode";
-}
+#theme-toggle .sun-icon { display: block; }
+#theme-toggle .moon-icon { display: none; }
 
-html.light-theme #theme-toggle::before {
-  content: "lightmode";
-}
+html.light-theme #theme-toggle .sun-icon { display: none; }
+html.light-theme #theme-toggle .moon-icon { display: block; }
 
 #theme-toggle:hover {
   opacity: 1;
   color: var(--accent-color);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
 }
 
 /* External Link Icons */
