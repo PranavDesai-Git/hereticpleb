@@ -7,7 +7,7 @@ export async function GET(context) {
   return rss({
     title: 'hereticpleb',
     description: 'Unconventional thoughts on faith and dissent.',
-    site: context.site || 'https://hereticpleb.com',
+    site: context.site || 'https://hereticpleb.vercel.app',
     items: posts.map((post) => ({
       title: post.frontmatter.title,
       pubDate: new Date(post.frontmatter.date),
