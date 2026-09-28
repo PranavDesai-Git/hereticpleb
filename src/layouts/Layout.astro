@@ -85,7 +85,7 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.vercel.app")} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
-		<script data-goatcounter="/api/gc/count" async src="/api/gc/script"></script>
+		<script data-goatcounter="https://hereticpleb.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 		<script is:inline>
 			const theme = (() => {
 				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
