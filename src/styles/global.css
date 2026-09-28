@@ -283,6 +283,14 @@ html.light-theme .post-thumbnail img {
   font-size: 0.95rem;
 }
 
+.post-date {
+  font-size: 0.85rem;
+  opacity: 0.5;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 @media (max-width: 750px) {
   .timeline-layout {
     flex-direction: column;
@@ -532,7 +540,7 @@ html.light-theme .toc-mobile {
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: pointer;
-  padding: 0;
+  padding: 3px 0 0 0; /* Nudge the arrow down slightly to optically center it */
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
