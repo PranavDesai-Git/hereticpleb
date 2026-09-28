@@ -59,7 +59,7 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
 										<p class="post-description">{post.frontmatter.description}</p>
 									)}
 									<div class="post-date">
-										{new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} &bull; {post.readingTime} min read
+										{new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { weekday: 'long' })} &bull; {new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} &bull; {post.readingTime} min read
 									</div>
 								</div>
 							</article>
