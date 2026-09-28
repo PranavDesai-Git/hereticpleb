@@ -540,7 +540,7 @@ html.light-theme .toc-mobile {
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: pointer;
-  padding: 3px 0 0 0; /* Nudge the arrow down slightly to optically center it */
+  padding: 0;
   border-radius: 50%;
   opacity: 0;
   pointer-events: none;
