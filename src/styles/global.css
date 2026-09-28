@@ -578,11 +578,11 @@ img:hover {
   background: none;
   border: none;
   color: var(--text-color);
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: none;
-  letter-spacing: -0.02em;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   padding: 0.5rem;
   cursor: pointer;
   opacity: 0.85;
