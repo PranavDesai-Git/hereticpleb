@@ -126,7 +126,6 @@ if (!readingTime && frontmatter?.file) {
 					<div style="font-style: italic; opacity: 0.7; font-size: 0.9rem;">
 						{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
 						{readingTime && <span> • {readingTime} min read</span>}
-						<span class="gc-view-count" style="display: none;"></span>
 					</div>
 				</header>
 			)}
@@ -465,25 +464,7 @@ if (!readingTime && frontmatter?.file) {
 					});
 				}
 
-				// Fetch GoatCounter views
-				const gcViewCount = document.querySelector('.gc-view-count');
-				if (gcViewCount) {
-					const path = encodeURIComponent(location.pathname);
-					fetch(`/api/gc-counter?path=${path}`)
-						.then(res => res.json())
-						.then(data => {
-							if (data && data.count) {
-								const count = parseInt(data.count.replace(/\D/g, ''), 10) || 0;
-								if (count >= 0) {
-									gcViewCount.textContent = ` • ${data.count} views`;
-									gcViewCount.style.display = 'inline';
-								}
-							}
-						})
-						.catch(() => {
-							// Silently ignore errors from adblockers (ERR_BLOCKED_BY_CLIENT)
-						});
-				}
+
 			});
 		</script>
 	</body>
