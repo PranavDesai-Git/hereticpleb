@@ -1,13 +1,14 @@
 ---
 import '@fontsource/unifrakturcook/700.css';
-import '@fontsource/texturina/400.css';
-import '@fontsource/texturina/700.css';
+import '@fontsource/geist-sans/400.css';
+import '@fontsource/geist-sans/700.css';
+import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import fs from 'node:fs';
 import { ClientRouter } from 'astro:transitions';
 
-import texturina400 from '@fontsource/texturina/files/texturina-latin-400-normal.woff2';
-import texturina700 from '@fontsource/texturina/files/texturina-latin-700-normal.woff2';
+import geist400 from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2';
+import geist700 from '@fontsource/geist-sans/files/geist-sans-latin-700-normal.woff2';
 import unifraktur700 from '@fontsource/unifrakturcook/files/unifrakturcook-latin-700-normal.woff2';
 
 const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
@@ -77,8 +78,8 @@ if (!readingTime && frontmatter?.file) {
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 
-		<link rel="preload" as="font" type="font/woff2" href={texturina400} crossorigin="anonymous" />
-		<link rel="preload" as="font" type="font/woff2" href={texturina700} crossorigin="anonymous" />
+		<link rel="preload" as="font" type="font/woff2" href={geist400} crossorigin="anonymous" />
+		<link rel="preload" as="font" type="font/woff2" href={geist700} crossorigin="anonymous" />
 		<link rel="preload" as="font" type="font/woff2" href={unifraktur700} crossorigin="anonymous" />
 
 		<meta name="generator" content={Astro.generator} />
@@ -107,15 +108,15 @@ if (!readingTime && frontmatter?.file) {
 			<nav class="site-nav">
 				{!isHome && <a href="/">hereticpleb</a>}
 				<a href="/rss.xml" class="rss-icon" aria-label="RSS Feed" title="RSS Feed">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M4 11a9 9 0 0 1 9 9"></path>
 						<path d="M4 4a16 16 0 0 1 16 16"></path>
 						<circle cx="5" cy="19" r="1"></circle>
 					</svg>
 				</a>
 				<button id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
-					<svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-					<svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+					<svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+					<svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
 				</button>
 			</nav>
 			
@@ -132,16 +133,23 @@ if (!readingTime && frontmatter?.file) {
 
 			<div class="article-content">
 				{frontmatter && headings && headings.length > 0 && (
-					<div class="toc-mobile hidden-desktop">
-						<h2>table of contents</h2>
-						<ul class="toc-list">
-							{headings.filter((h: any) => h.depth > 1).map((h: any) => (
-								<li class={`depth-${h.depth}`}>
-									<a href={`#${h.slug}`}>{h.text}</a>
-								</li>
-							))}
-						</ul>
-					</div>
+					<>
+						<details class="toc-mobile hidden-desktop" id="mobile-toc" open>
+							<summary><h2>table of contents</h2></summary>
+							<ul class="toc-list">
+								{headings.filter((h: any) => h.depth > 1).map((h: any) => (
+									<li class={`depth-${h.depth}`}>
+										<a href={`#${h.slug}`}>{h.text}</a>
+									</li>
+								))}
+							</ul>
+						</details>
+						<script is:inline>
+							if (window.innerWidth <= 750) {
+								document.getElementById('mobile-toc')?.removeAttribute('open');
+							}
+						</script>
+					</>
 				)}
 				<slot />
 				

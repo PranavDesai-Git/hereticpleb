@@ -4,7 +4,14 @@ export default defineConfig({
   site: 'https://hereticpleb.vercel.app',
   markdown: {
     shikiConfig: {
-      theme: 'dark-plus'
+      themes: {
+        light: 'github-light',
+        dark: 'dark-plus'
+      },
+      defaultColor: false
     }
+  },
+  redirects: {
+    '/blog': '/'
   }
 });

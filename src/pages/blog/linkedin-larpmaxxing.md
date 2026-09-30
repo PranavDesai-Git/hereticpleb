@@ -177,27 +177,16 @@ Now it was time to train the model. And that can be done with basically no effor
 
 
 ```python
-
 from ultralytics import YOLO
-
-
 
 model = YOLO('yolov8n.pt')
 
-
-
 results = model.train(
-
-data='dataset/data.yaml',
-
-epochs=50,
-
-imgsz=320,
-
-name='slop_detector'
-
+  data='dataset/data.yaml',
+  epochs=50,
+  imgsz=320,
+  name='slop_detector'
 )
-
 ```
 
 
@@ -211,19 +200,14 @@ Once the training finished, I wrote the Python script to run the model.
 
 
 ```python
-
 from ultralytics import YOLO
-
 import sys
 
 def main(image_path):
-
-model = YOLO('runs/detect/slop_detector/weights/best.pt')
-
-model(image_path, save=True, conf=0.10)
+    model = YOLO('runs/detect/slop_detector/weights/best.pt')
+    model(image_path, save=True, conf=0.10)
 
 main(sys.argv[1])
-
 ```
 
 
@@ -234,7 +218,7 @@ YAYYY I got my very own slop detector!!!
 
 
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/ywJ8i61Z9Uo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/ywJ8i61Z9Uo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 
