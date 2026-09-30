@@ -24,7 +24,7 @@ interface Props {
 const { title, frontmatter, headings } = Astro.props;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 const pageTitle = frontmatter?.title || title;
-const description = frontmatter?.description || "Unconventional thoughts on faith and dissent.";
+const description = frontmatter?.description || "Tech Rants and Build Logs of the heretic pleb";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hereticpleb.vercel.app');
 const ogType = Astro.url.pathname.startsWith('/blog/') ? 'article' : 'website';
 const ogImage = frontmatter?.image ? new URL(frontmatter.image, canonicalURL) : new URL('/og-image.jpg', canonicalURL);
