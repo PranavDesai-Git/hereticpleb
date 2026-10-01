@@ -225,9 +225,11 @@ if (!readingTime && frontmatter?.file) {
 				</aside>
 			)}
 
-			<footer style="text-align: center; margin-top: 4rem; padding-bottom: 2rem; font-size: 0.9rem; opacity: 0.6;">
-				<a href="/privacy" style="color: inherit; text-decoration: underline;">Privacy Policy</a>
-			</footer>
+			{Astro.url.pathname !== '/privacy' && Astro.url.pathname !== '/privacy/' && (
+				<footer style="text-align: center; margin-top: 4rem; padding-bottom: 2rem; font-size: 0.9rem; opacity: 0.6;">
+					<a href="/privacy" style="color: inherit; text-decoration: underline;">Privacy Policy</a>
+				</footer>
+			)}
 		</main>
 
 		<button id="back-to-top" aria-label="Back to top">
