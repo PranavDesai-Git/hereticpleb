@@ -165,19 +165,24 @@ if (!readingTime && frontmatter?.file) {
 				{frontmatter && (
 					<div class="post-footer-links" style="margin-top: 4rem; text-align: center;">
 						<hr style="margin-bottom: 2rem;" />
-						<p style="margin-bottom: 1rem; font-size: 1.1rem; font-weight: bold;">Enjoyed this post?</p>
-						<div style="margin-bottom: 2rem;">
-							<a href="/rss.xml" target="_blank" rel="noopener noreferrer" style="display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: bold; color: var(--accent-color); text-decoration: none; transition: opacity 0.2s;">
-								[ Subscribe via RSS ]
+						<p style="margin-bottom: 1.5rem; font-size: 1.1rem;">Enjoyed this post?</p>
+						<div style="margin-bottom: 2.5rem;">
+							<a href="/rss.xml" class="rss-icon" aria-label="RSS Feed" title="RSS Feed" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-color); text-decoration: none; font-weight: bold; font-size: 1.2rem;">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M4 11a9 9 0 0 1 9 9"></path>
+									<path d="M4 4a16 16 0 0 1 16 16"></path>
+									<circle cx="5" cy="19" r="1"></circle>
+								</svg>
+								Subscribe via RSS
 							</a>
 						</div>
-						<div style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 2rem;">
-							<span>Follow along:&nbsp;&nbsp;</span>
-							<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); text-decoration: underline;">GitHub</a>
-							<span style="margin: 0 0.5rem;">•</span>
-							<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); text-decoration: underline;">LinkedIn</a>
-							<span style="margin: 0 0.5rem;">•</span>
-							<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); text-decoration: underline;">X/Twitter</a>
+						<div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+							<span style="opacity: 0.8;">Follow along:</span>
+							<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); font-weight: 500;">GitHub</a>
+							<span style="opacity: 0.5;">&bull;</span>
+							<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); font-weight: 500;">LinkedIn</a>
+							<span style="opacity: 0.5;">&bull;</span>
+							<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer" style="color: var(--text-color); font-weight: 500;">X/Twitter</a>
 						</div>
 					</div>
 				)}
