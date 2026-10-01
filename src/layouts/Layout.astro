@@ -163,10 +163,21 @@ if (!readingTime && frontmatter?.file) {
 				<slot />
 				
 				{frontmatter && (
-					<div class="post-footer-links" style="margin-top: 4rem;">
+					<div class="post-footer-links" style="margin-top: 4rem; text-align: center;">
 						<hr style="margin-bottom: 2rem;" />
+						<p style="margin-bottom: 1.5rem; font-size: 1.1rem; font-style: italic;">If you liked the post</p>
+						<div style="margin-bottom: 2rem;">
+							<a href="/rss.xml" class="rss-icon" aria-label="RSS Feed" title="RSS Feed" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-color); text-decoration: none; font-weight: bold;">
+								subscribe to rss
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M4 11a9 9 0 0 1 9 9"></path>
+									<path d="M4 4a16 16 0 0 1 16 16"></path>
+									<circle cx="5" cy="19" r="1"></circle>
+								</svg>
+							</a>
+						</div>
+						<p style="margin-bottom: 1rem; opacity: 0.8;">or checkout my socials:</p>
 						<div class="social-links" style="justify-content: center; margin-bottom: 2rem;">
-							<a href="/rss.xml" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color);">subscribe to rss -&#62;</a>
 							<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
 							<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
 							<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer">twitter</a>
