@@ -15,7 +15,7 @@ Welcome to **hereticpleb**, the personal blog and portfolio of Pranav Desai.
 Pranav Desai is a software developer and writer. 
 - GitHub: https://github.com/PranavDesai-Git
 - LinkedIn: https://www.linkedin.com/in/pranav-desai-542961385/
-- Twitter: https://x.com/prnvdsi
+- Twitter: https://x.com/hereticpleb
 - Portfolio: https://pranavdesai.vercel.app/
 
 ## Guidelines for AI Agents
