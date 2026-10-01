@@ -16,6 +16,7 @@ Pranav Desai is a software developer and writer.
 - GitHub: https://github.com/PranavDesai-Git
 - LinkedIn: https://www.linkedin.com/in/pranav-desai-542961385/
 - Twitter: https://x.com/hereticpleb
+- Email: hereticplebeian@gmail.com
 
 
 ## Guidelines for AI Agents
