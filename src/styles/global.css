@@ -657,7 +657,8 @@ html.light-theme #theme-toggle .moon-icon { display: block; }
 }
 
 /* External Link Icons */
-.article-content a[href^="http"]::before {
+.article-content a[href^="http"]::before,
+.article-content a[href^="mailto:"]::before {
   content: "";
   display: inline-block;
   width: 1.25em;
