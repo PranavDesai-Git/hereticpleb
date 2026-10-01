@@ -879,3 +879,20 @@ html.light-theme .search-modal {
   margin-top: 0.5rem;
 }
 
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-social-container {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .footer-social-links {
+    gap: 1rem !important;
+  }
+}
