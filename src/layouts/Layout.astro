@@ -162,6 +162,23 @@ if (!readingTime && frontmatter?.file) {
 				)}
 				<slot />
 				
+				{frontmatter && (
+					<div class="rss-subscribe-card">
+						<div class="rss-subscribe-icon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M4 11a9 9 0 0 1 9 9"></path>
+								<path d="M4 4a16 16 0 0 1 16 16"></path>
+								<circle cx="5" cy="19" r="1"></circle>
+							</svg>
+						</div>
+						<div class="rss-subscribe-content">
+							<h3>Enjoyed this post?</h3>
+							<p>Subscribe to the RSS feed to get updates on new posts directly in your favorite feed reader.</p>
+							<a href="/rss.xml" class="rss-subscribe-button" target="_blank">Subscribe via RSS</a>
+						</div>
+					</div>
+				)}
+
 				{frontmatter && (prevPost || nextPost) && (
 					<div class="post-navigation">
 						<hr />
