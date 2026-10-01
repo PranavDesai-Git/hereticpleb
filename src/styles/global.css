@@ -763,6 +763,11 @@ html.light-theme .nav-links a {
 .nav-title {
   font-weight: 700;
   font-size: 1.1rem;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover .nav-title {
   color: var(--accent-color);
 }
 
