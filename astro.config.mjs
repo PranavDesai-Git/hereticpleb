@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://hereticpleb.vercel.app',
+  prefetch: true,
+  compressHTML: true,
   markdown: {
     shikiConfig: {
       themes: {
