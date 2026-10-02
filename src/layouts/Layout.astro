@@ -1,15 +1,7 @@
 ---
-import '@fontsource/unifrakturcook/700.css';
-import '@fontsource/geist-sans/400.css';
-import '@fontsource/geist-sans/700.css';
-import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import fs from 'node:fs';
 import { ClientRouter } from 'astro:transitions';
-
-import geist400 from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2';
-import geist700 from '@fontsource/geist-sans/files/geist-sans-latin-700-normal.woff2';
-import unifraktur700 from '@fontsource/unifrakturcook/files/unifrakturcook-latin-700-normal.woff2';
 
 const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
 const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
@@ -54,6 +46,9 @@ if (!readingTime && frontmatter?.file) {
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+		<link rel="preconnect" href="https://gc.zgo.at" />
+		<link rel="preconnect" href="https://hereticpleb.goatcounter.com" />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
 		
@@ -78,9 +73,10 @@ if (!readingTime && frontmatter?.file) {
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 
-		<link rel="preload" as="font" type="font/woff2" href={geist400} crossorigin="anonymous" />
-		<link rel="preload" as="font" type="font/woff2" href={geist700} crossorigin="anonymous" />
-		<link rel="preload" as="font" type="font/woff2" href={unifraktur700} crossorigin="anonymous" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.3.0/400.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.3.0/700.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/unifrakturcook@5.3.0/700.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.3.0/index.css" />
 
 		<meta name="generator" content={Astro.generator} />
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.vercel.app")} />
