@@ -5,7 +5,7 @@ export async function GET(context) {
   const posts = Object.values(postImportResult);
 
   return rss({
-    title: 'godobject',
+    title: 'godObject',
     description: 'Unconventional thoughts on faith and dissent.',
     site: context.site || 'https://godobject.dev',
     items: posts.map((post) => ({
