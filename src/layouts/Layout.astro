@@ -47,8 +47,6 @@ if (!readingTime && frontmatter?.file) {
 	<head>
 		<meta charset="UTF-8" />
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-		<link rel="preconnect" href="https://gc.zgo.at" />
-		<link rel="preconnect" href="https://hereticpleb.goatcounter.com" />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
 		
@@ -82,7 +80,6 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.vercel.app")} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
-		<script data-goatcounter="https://hereticpleb.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 		<script is:inline>
 			function applyTheme() {
 				const theme = (() => {

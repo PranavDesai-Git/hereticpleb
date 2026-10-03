@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Redirects to the new domain after 3 seconds -->
+    <meta http-equiv="refresh" content="3;url=https://godobject.dev">
+    <title>We've Moved!</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 { margin-bottom: 10px; }
+        p { color: #a0a0a0; margin-bottom: 20px; }
+        a {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        a:hover { color: #ccc; }
+        .spinner {
+            margin-top: 20px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>We've Moved!</h1>
+    <p>This site has moved to <a href="https://godobject.dev">godobject.dev</a>.</p>
+    <p>You will be redirected automatically in a few seconds...</p>
+    <div class="spinner"></div>
+</body>
+</html>
