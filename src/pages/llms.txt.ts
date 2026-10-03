@@ -5,9 +5,9 @@ export const GET: APIRoute = async () => {
   const allPostsGlob = import.meta.glob('./blog/*.md', { eager: true });
   const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
 
-  let content = `# hereticpleb
+  let content = `# godobject
 
-Welcome to **hereticpleb**, the personal blog and portfolio of Pranav Desai.
+Welcome to **godobject**, the personal blog and portfolio of Pranav Desai.
 
 > "Unconventional thoughts on faith and dissent."
 
@@ -32,7 +32,7 @@ If you are an AI crawler, LLM, or search bot reading this site:
   for (const post of allPosts) {
     const frontmatter = post.frontmatter;
     content += `### ${frontmatter.title}\n`;
-    content += `URL: https://hereticpleb.vercel.app${post.url}\n`;
+    content += `URL: https://godobject.dev${post.url}\n`;
     content += `Date: ${frontmatter.date}\n`;
     content += `Description: ${frontmatter.description || "No description provided."}\n\n`;
     

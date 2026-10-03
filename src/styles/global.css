@@ -3,7 +3,7 @@
   --bg-color: #000000; /* Pitch black */
   --text-color: #e5e5e5; /* Off-white to prevent halation and eye strain */
   --accent-color: #ff3333; /* Brighter crimson for dark mode */
-  --font-heading: 'UnifrakturCook', cursive;
+  --font-heading: var(--font-body);
   --font-body: 'Geist Sans', system-ui, -apple-system, sans-serif;
 }
 

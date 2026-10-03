@@ -16,8 +16,8 @@ interface Props {
 const { title, frontmatter, headings } = Astro.props;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 const pageTitle = frontmatter?.title || title;
-const description = frontmatter?.description || "Tech Rants and Build Logs of the heretic pleb";
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://hereticpleb.vercel.app');
+const description = frontmatter?.description || "Tech Rants and Build Logs of godobject";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://godobject.dev');
 const ogType = Astro.url.pathname.startsWith('/blog/') ? 'article' : 'website';
 const ogImage = frontmatter?.image ? new URL(frontmatter.image, canonicalURL) : new URL('/og-image.jpg', canonicalURL);
 
@@ -77,7 +77,7 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.3.0/index.css" />
 
 		<meta name="generator" content={Astro.generator} />
-		<link rel="alternate" type="application/rss+xml" title="hereticpleb" href={new URL("rss.xml", Astro.site || "https://hereticpleb.vercel.app")} />
+		<link rel="alternate" type="application/rss+xml" title="godobject" href={new URL("rss.xml", Astro.site || "https://godobject.dev")} />
 		<title>{pageTitle}</title>
 		<ClientRouter />
 		<script is:inline>
@@ -109,7 +109,7 @@ if (!readingTime && frontmatter?.file) {
 		<div id="progress-bar"></div>
 		<main>
 			<nav class="site-nav">
-				{!isHome && <a href="/">hereticpleb</a>}
+				{!isHome && <a href="/">godobject</a>}
 				<a href="/rss.xml" class="rss-icon" aria-label="RSS Feed" title="RSS Feed">
 					<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M4 11a9 9 0 0 1 9 9"></path>

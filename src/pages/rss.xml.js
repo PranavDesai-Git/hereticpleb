@@ -5,9 +5,9 @@ export async function GET(context) {
   const posts = Object.values(postImportResult);
 
   return rss({
-    title: 'hereticpleb',
+    title: 'godobject',
     description: 'Unconventional thoughts on faith and dissent.',
-    site: context.site || 'https://hereticpleb.vercel.app',
+    site: context.site || 'https://godobject.dev',
     items: posts.map((post) => ({
       title: post.frontmatter.title,
       pubDate: new Date(post.frontmatter.date),

@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://hereticpleb.vercel.app',
+  site: 'https://godobject.dev',
   prefetch: true,
   compressHTML: true,
   markdown: {
