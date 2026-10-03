@@ -39,9 +39,10 @@ const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 							return (
 								<div class="month-group">
 									<h3 class="month-heading">{monthGroup.monthName}</h3>
-									<div class="posts-in-year">
+									<div class="timeline-track">
 										{monthGroup.posts.map((post: any) => (
 											<a href={post.url} class="timeline-post" aria-label={`Read post: ${post.frontmatter.title}`}>
+												<span class="timeline-dot" aria-hidden="true"></span>
 												{post.frontmatter.image && (
 													<div class="post-thumbnail">
 														<img src={post.frontmatter.image} alt={post.frontmatter.title} loading="lazy" width="100" height="100" />
