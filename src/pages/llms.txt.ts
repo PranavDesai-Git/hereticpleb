@@ -5,9 +5,9 @@ export const GET: APIRoute = async () => {
   const allPostsGlob = import.meta.glob('./blog/*.md', { eager: true });
   const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
 
-  let content = `# godobject
+  let content = `# godObject
 
-Welcome to **godobject**, the personal blog and portfolio of Pranav Desai.
+Welcome to **godObject**, the personal blog and portfolio of Pranav Desai.
 
 > "Unconventional thoughts on faith and dissent."
 
