@@ -11,63 +11,60 @@ const posts = Object.entries(postsObj).map(([path, post]) => {
 });
 posts.sort((a, b) => Date.parse(b.frontmatter.date || new Date()) - Date.parse(a.frontmatter.date || new Date()));
 
-const postsByYear = {};
+const postsByYear: Record<number, Record<number, { monthName: string; posts: any[] }>> = {};
 posts.forEach((post) => {
 	const date = new Date(post.frontmatter.date || new Date());
 	const year = date.getFullYear();
-	if (!postsByYear[year]) postsByYear[year] = [];
-	postsByYear[year].push(post);
+	const monthIndex = date.getMonth();
+	const monthName = date.toLocaleDateString('en-US', { month: 'long' });
+
+	if (!postsByYear[year]) postsByYear[year] = {};
+	if (!postsByYear[year][monthIndex]) postsByYear[year][monthIndex] = { monthName, posts: [] };
+	postsByYear[year][monthIndex].posts.push(post);
 });
-const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
+const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 ---
 
-<Layout title="godobject">
-	<header class="home-header">
-		<h1>godobject</h1>
-		<div class="social-links">
-			<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">github</a>
-			<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">linkedin</a>
-			<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer">twitter</a>
-			<a href="mailto:hereticplebeian@gmail.com">email</a>
-			<a href="/privacy">privacy</a>
-		</div>
-	</header>
-
+<Layout title="godObject">
 	<div class="timeline-layout">
-		<aside class="timeline-sidebar hidden-mobile">
-			<ul>
-				{years.map(year => (
-					<li><a href={`#year-${year}`}>{year}</a></li>
-				))}
-			</ul>
-		</aside>
-
 		<div class="timeline-content">
-			{years.map(year => (
-				<section id={`year-${year}`} class="year-section">
-					<h2 class="year-heading">{year}</h2>
-					<div class="posts-in-year">
-						{postsByYear[year].map((post: any) => (
-							<article class="timeline-post">
-								{post.frontmatter.image && (
-									<div class="post-thumbnail">
-										<img src={post.frontmatter.image} alt={post.frontmatter.title} />
-									</div>
-								)}
-								<div class="post-content">
-									<h3><a href={post.url}>{post.frontmatter.title}</a></h3>
-									{post.frontmatter.description && (
-										<p class="post-description">{post.frontmatter.description}</p>
-									)}
-									<div class="post-date">
-										{new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { weekday: 'long' })} &bull; {new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} &bull; {post.readingTime} min read
+			<h1 class="sr-only">godObject - Tech Rants and Build Logs</h1>
+			{years.map(year => {
+				const monthIndices = Object.keys(postsByYear[year]).map(Number).sort((a, b) => b - a);
+				return (
+					<section id={`year-${year}`} class="year-section">
+						<h2 class="year-heading">{year}</h2>
+						{monthIndices.map(mIdx => {
+							const monthGroup = postsByYear[year][mIdx];
+							return (
+								<div class="month-group">
+									<h3 class="month-heading">{monthGroup.monthName}</h3>
+									<div class="posts-in-year">
+										{monthGroup.posts.map((post: any) => (
+											<a href={post.url} class="timeline-post" aria-label={`Read post: ${post.frontmatter.title}`}>
+												{post.frontmatter.image && (
+													<div class="post-thumbnail">
+														<img src={post.frontmatter.image} alt={post.frontmatter.title} loading="lazy" width="100" height="100" />
+													</div>
+												)}
+												<div class="post-content">
+													<h3>{post.frontmatter.title}</h3>
+													{post.frontmatter.description && (
+														<p class="post-description">{post.frontmatter.description}</p>
+													)}
+													<div class="post-date">
+														{new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { weekday: 'short' })} &bull; {new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} &bull; {post.readingTime} min read
+													</div>
+												</div>
+											</a>
+										))}
 									</div>
 								</div>
-							</article>
-						))}
-					</div>
-				</section>
-			))}
+							);
+						})}
+					</section>
+				);
+			})}
 		</div>
 	</div>
 </Layout>
