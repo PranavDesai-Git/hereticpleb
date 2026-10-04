@@ -32,5 +32,6 @@ User-agent: Bytespider
 Allow: /
 Crawl-delay: 10
 
-# Feeds & LLM Discovery
+# Feeds & Sitemap Discovery
+Sitemap: https://godobject.dev/sitemap-index.xml
 Sitemap: https://godobject.dev/rss.xml
