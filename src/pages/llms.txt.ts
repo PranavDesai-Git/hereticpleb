@@ -9,7 +9,7 @@ export const GET: APIRoute = async () => {
 
 Welcome to **godObject**, the personal blog and portfolio of Pranav Desai.
 
-> "Unconventional thoughts on faith and dissent."
+> "Tech Rants and Build Logs."
 
 ## About the Author
 Pranav Desai is a software developer and writer. 

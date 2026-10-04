@@ -6,7 +6,7 @@ export async function GET(context) {
 
   return rss({
     title: 'godObject',
-    description: 'Unconventional thoughts on faith and dissent.',
+    description: 'Tech Rants and Build Logs of godObject',
     site: context.site || 'https://godobject.dev',
     items: posts.map((post) => ({
       title: post.frontmatter.title,
