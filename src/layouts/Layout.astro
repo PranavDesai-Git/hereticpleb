@@ -1,4 +1,8 @@
 ---
+import '@fontsource/geist-sans/400.css';
+import '@fontsource/geist-sans/700.css';
+import '@fontsource/unifrakturcook/700.css';
+import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,7 +63,6 @@ if (!readingTime && frontmatter?.file) {
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
 		
@@ -84,11 +87,6 @@ if (!readingTime && frontmatter?.file) {
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
-
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.3.0/400.css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.3.0/700.css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/unifrakturcook@5.3.0/700.css" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.3.0/index.css" />
 
 		<meta name="generator" content={Astro.generator} />
 		<link rel="alternate" type="application/rss+xml" title="godObject" href={new URL("rss.xml", Astro.site || "https://godobject.dev")} />
