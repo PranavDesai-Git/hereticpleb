@@ -7,6 +7,8 @@ import '../styles/global.css';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ClientRouter } from 'astro:transitions';
+import { Image } from 'astro:assets';
+import { getAbsoluteImageUrl, resolveImage } from '../utils/images';
 
 const mdi = JSON.parse(fs.readFileSync(path.resolve('node_modules/@iconify/json/json/mdi.json'), 'utf-8'));
 const getMdiSvg = (name: string) => `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="currentColor">${mdi.icons[name].body}</svg>`;
@@ -21,7 +23,9 @@ const sunIcon = getMdiSvg('white-balance-sunny');
 const moonIcon = getMdiSvg('moon-waning-crescent');
 
 const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
-const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
+const allPosts = Object.values(allPostsGlob)
+	.filter((p: any) => import.meta.env.DEV || !p.frontmatter?.draft)
+	.sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
 
 
 interface Props {
@@ -34,9 +38,12 @@ const { title, frontmatter, headings } = Astro.props;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 const pageTitle = frontmatter?.title || title;
 const description = frontmatter?.description || "Tech Rants and Build Logs of godObject";
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://godobject.dev');
+const siteURL = Astro.site || 'https://godobject.dev';
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const ogType = Astro.url.pathname.startsWith('/blog/') ? 'article' : 'website';
-const ogImage = frontmatter?.image ? new URL(frontmatter.image, canonicalURL) : new URL('/og-image.jpg', canonicalURL);
+const ogImageUrl = getAbsoluteImageUrl(frontmatter?.image, siteURL) || new URL('/og-image.jpg', siteURL).href;
+const ogImageAlt = frontmatter?.imageAlt || frontmatter?.image?.alt || pageTitle;
+const heroImage = resolveImage(frontmatter?.image, frontmatter?.imageAlt || pageTitle);
 
 let prevPost = null;
 let nextPost = null;
@@ -71,14 +78,17 @@ if (!readingTime && frontmatter?.file) {
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={ogImage} />
+		<meta property="og:image" content={ogImageUrl} />
+		{ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+		<link rel="image_src" href={ogImageUrl} />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content={canonicalURL} />
 		<meta name="twitter:title" content={pageTitle} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image" content={ogImageUrl} />
+		{ogImageAlt && <meta name="twitter:image:alt" content={ogImageAlt} />}
 		<meta name="twitter:creator" content="@hereticpleb" />
 
 		<!-- Theme & Author -->
@@ -158,11 +168,42 @@ if (!readingTime && frontmatter?.file) {
 			</nav>
 			
 			{frontmatter && (
-				<header class="article-header">
-					<h1>{frontmatter.title}</h1>
-					<div class="article-header-meta">
-						{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-						{readingTime && <span> • {readingTime} min read</span>}
+				<header class={`article-header ${heroImage ? 'has-hero-image' : ''}`}>
+					{heroImage && (
+						<div class="article-hero-bg" aria-hidden="true">
+							{heroImage.imageMetadata ? (
+								<Image
+									src={heroImage.imageMetadata}
+									alt=""
+									loading="eager"
+									fetchpriority="high"
+									decoding="async"
+									width={1280}
+									height={720}
+								/>
+							) : (
+								<Image
+									src={heroImage.src}
+									alt=""
+									loading="eager"
+									fetchpriority="high"
+									decoding="async"
+									width={1280}
+									height={720}
+								/>
+							)}
+							<div class="article-hero-overlay"></div>
+						</div>
+					)}
+					<div class="article-header-inner">
+						<h1>
+							{frontmatter.title}
+							{frontmatter.draft && <span class="draft-badge">Draft</span>}
+						</h1>
+						<div class="article-header-meta">
+							{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+							{readingTime && <span> • {readingTime} min read</span>}
+						</div>
 					</div>
 				</header>
 			)}
@@ -391,9 +432,11 @@ if (!readingTime && frontmatter?.file) {
 					h.appendChild(anchor);
 				});
 
-				// Fullscreen Image Click & Keyboard Lightbox
+				// Fullscreen Image Click & Keyboard Lightbox (only for article content images, not linked thumbnails)
 				const images = document.querySelectorAll('.article-content img');
 				images.forEach(img => {
+					if (img.closest('a') || img.closest('.post-thumbnail')) return;
+
 					img.style.cursor = 'zoom-in';
 					img.setAttribute('tabindex', '0');
 					img.setAttribute('role', 'button');

@@ -2,7 +2,9 @@ export async function GET() {
   const postsGlob = import.meta.glob('./blog/*.md', { eager: true });
   const postsRawGlob = import.meta.glob('./blog/*.md', { query: '?raw', import: 'default', eager: true });
 
-  const posts = Object.entries(postsGlob).map(([path, post]) => {
+  const posts = Object.entries(postsGlob)
+    .filter(([_, post]) => import.meta.env.DEV || !post.frontmatter?.draft)
+    .map(([path, post]) => {
     const rawContent = (postsRawGlob[path] || '');
     
     // Strip frontmatter

@@ -376,17 +376,27 @@ hr {
 
 .post-thumbnail {
   flex-shrink: 0;
-  width: 90px;
-  height: 90px;
-  border-radius: 8px;
+  width: 220px;
+  max-width: 38%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
   overflow: hidden;
+  position: relative;
+  background-color: #0f0f0f;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+html.light-theme .post-thumbnail {
+  background-color: #e5e5e5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .post-thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  display: block;
+  border-radius: 10px;
   margin: 0 !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: border-color 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -395,6 +405,7 @@ hr {
 html.light-theme .post-thumbnail img {
   border-color: rgba(0, 0, 0, 0.1);
 }
+
 
 .post-content {
   flex-grow: 1;
@@ -1552,8 +1563,10 @@ html, body {
   }
 
   .post-thumbnail {
-    width: 75px;
-    height: 75px;
+    width: 175px;
+    max-width: 38%;
+    aspect-ratio: 16 / 9;
+    height: auto;
   }
 
   .post-content h3 {
@@ -1620,6 +1633,27 @@ html, body {
   }
 }
 
+@media (max-width: 560px) {
+  .timeline-post.has-thumbnail {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .timeline-post.has-thumbnail .post-thumbnail {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .timeline-post.has-thumbnail .post-thumbnail img {
+    border-radius: 12px;
+  }
+
+}
+
 @media (max-width: 420px) {
   .site-nav-actions {
     gap: 0.2rem;
@@ -1631,20 +1665,6 @@ html, body {
 
   .nav-divider {
     display: none;
-  }
-
-  .timeline-post {
-    flex-direction: column-reverse;
-    align-items: flex-start;
-  }
-
-  .post-thumbnail {
-    width: 100%;
-    height: 140px;
-  }
-
-  .post-thumbnail img {
-    border-radius: 6px;
   }
 }
 
@@ -1674,6 +1694,100 @@ html, body {
   font-style: italic;
   opacity: 0.7;
   font-size: 0.9rem;
+}
+
+/* Article Hero Header (When frontmatter has image) */
+.article-header.has-hero-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4.5rem 2rem 3.5rem;
+  margin-bottom: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  background-color: #000000;
+}
+
+html.light-theme .article-header.has-hero-image {
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+}
+
+.article-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.article-hero-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  filter: brightness(0.68) contrast(1.08);
+  transform: scale(1.02);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.article-hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: 
+    linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.6) 40%, rgba(0, 0, 0, 0.88) 100%),
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+}
+
+.article-header-inner {
+  position: relative;
+  z-index: 3;
+  max-width: 92%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.article-header.has-hero-image h1 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.95);
+  margin-top: 0;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.article-header.has-hero-image .article-header-meta {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 650px) {
+  .article-header.has-hero-image {
+    padding: 3rem 1.25rem 2.5rem;
+    min-height: 220px;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
 }
 
 .post-footer-links {
@@ -1801,6 +1915,29 @@ html.light-theme .footer-social-links:hover {
 .site-footer a {
   color: inherit;
   text-decoration: underline;
+}
+
+.draft-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  line-height: 1.4;
+}
+
+html.light-theme .draft-badge {
+  background-color: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.3);
 }
 
 @media (prefers-reduced-motion: reduce) {
