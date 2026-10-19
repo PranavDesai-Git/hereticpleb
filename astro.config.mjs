@@ -59,6 +59,9 @@ function draftIntegration() {
 }
 
 export default defineConfig({
+  devToolbar: {
+    enabled: false
+  },
   site: 'https://godobject.dev',
   integrations: [
     draftIntegration(),
