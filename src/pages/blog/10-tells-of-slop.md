@@ -3,6 +3,7 @@ layout: ../../layouts/Layout.astro
 title: "10 tells of a slop ui"
 date: 2026-09-27T23:12:00+05:30
 description: "AI agents produce slop when not restricted. Here are 10 things to watch out for"
+image: "../../assets/cloudslop2.png"
 ---
 
 Recently my college app was updated with "minor UI improvements", and it was the most slop-coded user interface I have seen.

@@ -3,7 +3,9 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
   const allPostsGlob = import.meta.glob('./blog/*.md', { eager: true });
-  const allPosts = Object.values(allPostsGlob).sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
+  const allPosts = Object.values(allPostsGlob)
+    .filter((post: any) => import.meta.env.DEV || !post.frontmatter?.draft)
+    .sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
 
   let content = `# godObject
 
