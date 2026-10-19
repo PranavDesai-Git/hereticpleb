@@ -1,13 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { resolveImage } from '../utils/images';
+
 const postsObj = import.meta.glob('../pages/blog/*.md', { eager: true }) as Record<string, any>;
 const postsRawObj = import.meta.glob('../pages/blog/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
-const posts = Object.entries(postsObj).map(([path, post]) => {
+const posts = Object.entries(postsObj)
+	.filter(([_, post]) => import.meta.env.DEV || !post.frontmatter?.draft)
+	.map(([path, post]) => {
 	const rawContent = postsRawObj[path] || '';
 	const wordCount = rawContent.trim().split(/\s+/).length || 1;
 	const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-	return { ...post, readingTime };
+	const image = resolveImage(post.frontmatter?.image, post.frontmatter?.imageAlt || post.frontmatter?.title);
+	return { ...post, readingTime, image };
 });
 posts.sort((a, b) => Date.parse(b.frontmatter.date || new Date()) - Date.parse(a.frontmatter.date || new Date()));
 
@@ -41,14 +47,35 @@ const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 									<h3 class="month-heading">{monthGroup.monthName}</h3>
 									<div class="posts-list">
 										{monthGroup.posts.map((post: any) => (
-											<a href={post.url} class="timeline-post" aria-label={`Read post: ${post.frontmatter.title}`}>
-												{post.frontmatter.image && (
+											<a href={post.url} class={`timeline-post ${post.image ? 'has-thumbnail' : ''}`} aria-label={`Read post: ${post.frontmatter.title}`}>
+												{post.image && (
 													<div class="post-thumbnail">
-														<img src={post.frontmatter.image} alt={post.frontmatter.title} loading="lazy" width="100" height="100" />
+														{post.image.imageMetadata ? (
+															<Image
+																src={post.image.imageMetadata}
+																alt={post.image.alt || post.frontmatter.title}
+																loading="lazy"
+																decoding="async"
+																width={320}
+																height={180}
+															/>
+														) : (
+															<Image
+																src={post.image.src}
+																alt={post.image.alt || post.frontmatter.title}
+																loading="lazy"
+																decoding="async"
+																width={320}
+																height={180}
+															/>
+														)}
 													</div>
 												)}
 												<div class="post-content">
-													<h3>{post.frontmatter.title}</h3>
+													<h3>
+														{post.frontmatter.title}
+														{post.frontmatter?.draft && <span class="draft-badge">Draft</span>}
+													</h3>
 													{post.frontmatter.description && (
 														<p class="post-description">{post.frontmatter.description}</p>
 													)}
