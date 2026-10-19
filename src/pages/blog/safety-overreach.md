@@ -4,6 +4,7 @@ title: "Safety Overreach"
 date: 2026-10-16T23:12:00+05:30
 image: "../../assets/rapunzel.jpg"
 description: "Rant about how authority figures keep taking away our ability to do things in the name of safety that weirdly always seems to benifit them"
+draft: true
 ---
 
 ## Introudction
