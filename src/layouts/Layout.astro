@@ -173,7 +173,7 @@ if (!readingTime && frontmatter?.file) {
 			<div class="article-content">
 				{frontmatter && headings && headings.length > 0 && (
 					<>
-						<details class="toc-mobile hidden-desktop" id="mobile-toc" open>
+						<details class="toc-mobile" id="mobile-toc">
 							<summary><h2>contents</h2></summary>
 							<ul class="toc-list">
 								{headings.filter((h: any) => h.depth > 1).map((h: any) => (
@@ -183,11 +183,17 @@ if (!readingTime && frontmatter?.file) {
 								))}
 							</ul>
 						</details>
-						<script is:inline>
-							if (window.innerWidth <= 750) {
-								document.getElementById('mobile-toc')?.removeAttribute('open');
-							}
-						</script>
+
+						<aside class="toc-tablet" aria-label="Table of contents">
+							<h2>contents</h2>
+							<ul class="toc-list">
+								{headings.filter((h: any) => h.depth > 1).map((h: any) => (
+									<li class={`depth-${h.depth}`}>
+										<a href={`#${h.slug}`}>{h.text}</a>
+									</li>
+								))}
+							</ul>
+						</aside>
 					</>
 				)}
 				<slot />
@@ -243,7 +249,7 @@ if (!readingTime && frontmatter?.file) {
 			</div>
 
 			{frontmatter && headings && headings.length > 0 && (
-				<aside class="toc-desktop hidden-mobile">
+				<aside class="toc-desktop">
 					<h2>Contents</h2>
 					<ul class="toc-list">
 						{headings.filter((h: any) => h.depth > 1).map((h: any) => (

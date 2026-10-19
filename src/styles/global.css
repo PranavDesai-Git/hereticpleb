@@ -741,70 +741,85 @@ li {
   margin-bottom: 0.5rem;
 }
 
-/* Table of Contents */
+/* Mobile Table of Contents (Collapsed by default, <= 750px) */
 .toc-mobile {
-  float: right;
-  width: 45%;
-  max-width: 250px;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  float: none;
+  max-width: none;
+  margin-left: 0;
+  margin-bottom: 2rem;
+  padding: 0 0 0 1rem;
+  border-left: 2px solid var(--accent-color);
+  border-bottom: none;
   font-size: 0.85rem;
   line-height: 1.4;
   font-family: var(--font-body);
 }
 
-html.light-theme .toc-mobile {
-  border-left-color: rgba(0, 0, 0, 0.1);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
-}
-
 .toc-mobile summary {
   cursor: pointer;
   outline: none;
+  display: list-item;
+  list-style: disclosure-closed;
+}
+
+.toc-mobile[open] summary {
+  list-style: disclosure-open;
 }
 
 .toc-mobile summary h2 {
   font-family: var(--font-body);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   margin-top: 0;
   margin-bottom: 0;
   font-weight: 700;
   display: inline-block;
+  cursor: pointer;
 }
 
 .toc-mobile[open] summary h2 {
   margin-bottom: 1rem;
 }
 
-@media (min-width: 751px) {
-  .toc-mobile summary {
-    pointer-events: none;
-    list-style: none;
-  }
-  .toc-mobile summary::-webkit-details-marker {
-    display: none;
-  }
-  .toc-mobile > :not(summary) {
-    display: block !important;
-  }
-  .toc-mobile summary h2 {
+/* Tablet Table of Contents (751px - 1379px, floated right, open) */
+.toc-tablet {
+  display: none;
+}
+
+@media (min-width: 751px) and (max-width: 1379px) {
+  .toc-tablet {
+    display: block;
+    float: right;
+    width: 45%;
+    max-width: 250px;
+    margin-left: 1.5rem;
     margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    font-family: var(--font-body);
   }
 }
 
-@media (max-width: 750px) {
+html.light-theme .toc-tablet {
+  border-left-color: rgba(0, 0, 0, 0.1);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.toc-tablet h2 {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+@media (min-width: 751px) {
   .toc-mobile {
-    float: none;
-    max-width: none;
-    margin-left: 0;
-    margin-bottom: 2rem;
-    padding: 0 0 0 1rem;
-    border-left: 2px solid var(--accent-color);
-    border-bottom: none;
+    display: none !important;
   }
 }
 
@@ -916,7 +931,7 @@ html.light-theme #progress-bar {
 #back-to-top {
   position: fixed;
   bottom: 2rem;
-  right: max(1.5rem, calc(50vw - 32.5ch + 1.5rem));
+  right: max(1.5rem, calc(50vw - (var(--content-width) / 2) + 1.5rem));
   z-index: 99;
   font-size: 1.5rem;
   width: 3rem;
