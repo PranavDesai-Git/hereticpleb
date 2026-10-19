@@ -7,7 +7,7 @@ import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import fs from 'node:fs';
 import path from 'node:path';
-import { ClientRouter } from 'astro:transitions';
+import { ClientRouter, fade } from 'astro:transitions';
 import { Image } from 'astro:assets';
 import { getAbsoluteImageUrl, resolveImage } from '../utils/images';
 
@@ -104,7 +104,7 @@ if (!readingTime && frontmatter?.file) {
 		<link rel="preload" href={geistSans400} as="font" type="font/woff2" crossorigin="anonymous" />
 		<link rel="preload" href={geistSans700} as="font" type="font/woff2" crossorigin="anonymous" />
 		<title>{pageTitle}</title>
-		<ClientRouter />
+		<ClientRouter fallback="animate" />
 		<script is:inline>
 			function applyTheme() {
 				const theme = (() => {
@@ -133,7 +133,7 @@ if (!readingTime && frontmatter?.file) {
 	<body>
 		<a href="#main-content" class="skip-link">Skip to content</a>
 		<div id="progress-bar"></div>
-		<main id="main-content">
+		<main id="main-content" transition:animate={fade({ duration: '0.3s' })}>
 			<nav class="site-nav">
 				<div class="site-nav-brand">
 					<a href="/">godObject</a>
@@ -361,11 +361,15 @@ if (!readingTime && frontmatter?.file) {
 			const themeToggle = document.getElementById('theme-toggle');
 			if (themeToggle) {
 				themeToggle.addEventListener('click', () => {
+					document.documentElement.classList.add('theme-transition');
 					document.documentElement.classList.toggle('light-theme');
 					const isLight = document.documentElement.classList.contains('light-theme');
 					localStorage.setItem('theme', isLight ? 'light' : 'dark');
 					const metaTheme = document.querySelector('meta[name="theme-color"]');
 					if (metaTheme) metaTheme.setAttribute('content', isLight ? '#faf8f5' : '#000000');
+					setTimeout(() => {
+						document.documentElement.classList.remove('theme-transition');
+					}, 300);
 				});
 			}
 				// Scroll-Spy TOC
@@ -441,7 +445,7 @@ if (!readingTime && frontmatter?.file) {
 					h.appendChild(anchor);
 				});
 
-				// Fullscreen Image Click & Keyboard Lightbox
+				// Fullscreen Image Click & Keyboard Lightbox (only for article content images, not linked thumbnails)
 				const images = document.querySelectorAll('.article-content img');
 				images.forEach(img => {
 					if (img.closest('a') || img.closest('.post-thumbnail')) return;
