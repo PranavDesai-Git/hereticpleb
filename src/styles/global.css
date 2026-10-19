@@ -1100,8 +1100,9 @@ html.light-theme .copy-btn:hover {
 
 /* Heading Anchor Links */
 .heading-anchor {
+  position: absolute;
   display: inline-block;
-  margin-left: 0.45rem;
+  margin-left: 0.5rem;
   opacity: 0;
   color: var(--text-subtle);
   text-decoration: none;
@@ -1109,7 +1110,6 @@ html.light-theme .copy-btn:hover {
   font-family: var(--font-body);
   font-size: 0.85em;
   transition: opacity 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  position: relative;
 }
 
 h2:hover .heading-anchor,
