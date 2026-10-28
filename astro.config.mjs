@@ -77,7 +77,10 @@ export default defineConfig({
       }
     })
   ],
-  prefetch: true,
+  build: {
+    inlineStylesheets: 'always'
+  },
+  prefetch: false,
   compressHTML: true,
   markdown: {
     shikiConfig: {
