@@ -1,7 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
-import { resolveImage } from '../utils/images';
 
 const postsObj = import.meta.glob('../pages/blog/*.md', { eager: true }) as Record<string, any>;
 const postsRawObj = import.meta.glob('../pages/blog/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
@@ -9,89 +7,52 @@ const postsRawObj = import.meta.glob('../pages/blog/*.md', { query: '?raw', impo
 const posts = Object.entries(postsObj)
 	.filter(([_, post]) => import.meta.env.DEV || !post.frontmatter?.draft)
 	.map(([path, post]) => {
-	const rawContent = postsRawObj[path] || '';
-	const wordCount = rawContent.trim().split(/\s+/).length || 1;
-	const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-	const image = resolveImage(post.frontmatter?.image, post.frontmatter?.imageAlt || post.frontmatter?.title);
-	return { ...post, readingTime, image };
-});
+		const rawContent = postsRawObj[path] || '';
+		const wordCount = rawContent.trim().split(/\s+/).length || 1;
+		const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+		return { ...post, readingTime };
+	});
+
 posts.sort((a, b) => Date.parse(b.frontmatter.date || new Date()) - Date.parse(a.frontmatter.date || new Date()));
 
-const postsByYear: Record<number, Record<number, { monthName: string; posts: any[] }>> = {};
+const postsByYear: Record<number, any[]> = {};
 posts.forEach((post) => {
-	const date = new Date(post.frontmatter.date || new Date());
-	const year = date.getFullYear();
-	const monthIndex = date.getMonth();
-	const monthName = date.toLocaleDateString('en-US', { month: 'long' });
-
-	if (!postsByYear[year]) postsByYear[year] = {};
-	if (!postsByYear[year][monthIndex]) postsByYear[year][monthIndex] = { monthName, posts: [] };
-	postsByYear[year][monthIndex].posts.push(post);
+	const year = new Date(post.frontmatter.date || new Date()).getFullYear();
+	if (!postsByYear[year]) postsByYear[year] = [];
+	postsByYear[year].push(post);
 });
 const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
 ---
 
 <Layout title="godObject">
-	<div class="timeline-layout">
-		<div class="timeline-content">
-			<h1 class="sr-only">godObject - Tech Rants and Build Logs</h1>
-			{years.map(year => {
-				const monthIndices = Object.keys(postsByYear[year]).map(Number).sort((a, b) => b - a);
-				return (
-					<section id={`year-${year}`} class="year-section">
-						<h2 class="year-heading">{year}</h2>
-						{monthIndices.map(mIdx => {
-							const monthGroup = postsByYear[year][mIdx];
-							return (
-								<div class="month-group">
-									<h3 class="month-heading">{monthGroup.monthName}</h3>
-									<div class="posts-list">
-										{monthGroup.posts.map((post: any) => (
-											<a href={post.url} class={`timeline-post ${post.image ? 'has-thumbnail' : ''}`} aria-label={`Read post: ${post.frontmatter.title}`}>
-												{post.image && (
-													<div class="post-thumbnail">
-														{post.image.imageMetadata ? (
-															<Image
-																src={post.image.imageMetadata}
-																alt={post.image.alt || post.frontmatter.title}
-																loading="lazy"
-																decoding="async"
-																width={320}
-																height={180}
-															/>
-														) : (
-															<Image
-																src={post.image.src}
-																alt={post.image.alt || post.frontmatter.title}
-																loading="lazy"
-																decoding="async"
-																width={320}
-																height={180}
-															/>
-														)}
-													</div>
-												)}
-												<div class="post-content">
-													<h3>
-														{post.frontmatter.title}
-														{post.frontmatter?.draft && <span class="draft-badge">Draft</span>}
-													</h3>
-													{post.frontmatter.description && (
-														<p class="post-description">{post.frontmatter.description}</p>
-													)}
-													<div class="post-date">
-														{new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { weekday: 'short' })} &bull; {new Date(post.frontmatter.date || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} &bull; {post.readingTime} min read
-													</div>
-												</div>
-											</a>
-										))}
-									</div>
-								</div>
-							);
-						})}
-					</section>
-				);
-			})}
-		</div>
+	<div class="home-intro">
+		<p>
+			Engineering, systems, and build logs by Pranav Desai.
+		</p>
 	</div>
+
+	{years.map(year => (
+		<section class="year-group">
+			<h2 class="year-heading">{year}</h2>
+			<ul class="post-list">
+				{postsByYear[year].map((post: any) => (
+					<li>
+						<a href={post.url} class="post-row">
+							<span class="post-row-title">
+								{post.frontmatter.title}
+								{post.frontmatter.draft && <span class="draft-badge">Draft</span>}
+							</span>
+							<span class="post-row-meta">
+								<time datetime={new Date(post.frontmatter.date).toISOString()}>
+									{new Date(post.frontmatter.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+								</time>
+								<span>·</span>
+								<span>{post.readingTime} min</span>
+							</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</section>
+	))}
 </Layout>

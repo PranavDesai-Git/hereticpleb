@@ -1,61 +1,23 @@
 ---
-import '@fontsource/geist-sans/400.css';
-import '@fontsource/geist-sans/700.css';
-import geistSans400 from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url';
-import geistSans700 from '@fontsource/geist-sans/files/geist-sans-latin-700-normal.woff2?url';
-import '@fontsource/jetbrains-mono';
 import '../styles/global.css';
 import fs from 'node:fs';
-import path from 'node:path';
-import { ClientRouter, fade } from 'astro:transitions';
-import { Image } from 'astro:assets';
-import { getAbsoluteImageUrl, resolveImage } from '../utils/images';
-
-const mdi = JSON.parse(fs.readFileSync(path.resolve('node_modules/@iconify/json/json/mdi.json'), 'utf-8'));
-const getMdiSvg = (name: string) => `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="currentColor">${mdi.icons[name].body}</svg>`;
-
-const githubIcon = getMdiSvg('github');
-const linkedinIcon = getMdiSvg('linkedin');
-const twitterIcon = getMdiSvg('twitter');
-const emailIcon = getMdiSvg('email');
-const rssIcon = getMdiSvg('rss');
-const searchIcon = getMdiSvg('magnify');
-const sunIcon = getMdiSvg('white-balance-sunny');
-const moonIcon = getMdiSvg('moon-waning-crescent');
-
-const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true });
-const allPosts = Object.values(allPostsGlob)
-	.filter((p: any) => import.meta.env.DEV || !p.frontmatter?.draft)
-	.sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
-
+import { getAbsoluteImageUrl } from '../utils/images';
 
 interface Props {
 	title: string;
 	frontmatter?: any;
-	headings?: { depth: number; slug: string; text: string }[];
+	description?: string;
 }
 
-const { title, frontmatter, headings } = Astro.props;
+const { title, frontmatter, description: descProp } = Astro.props;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 const pageTitle = frontmatter?.title || title;
-const description = frontmatter?.description || "Tech Rants and Build Logs of godObject";
+const description = frontmatter?.description || descProp || "Tech Rants and Build Logs of godObject";
 const siteURL = Astro.site || 'https://godobject.dev';
 const canonicalURL = new URL(Astro.url.pathname, siteURL);
 const ogType = Astro.url.pathname.startsWith('/blog/') ? 'article' : 'website';
 const ogImageUrl = getAbsoluteImageUrl(frontmatter?.image, siteURL) || new URL('/og-image.jpg', siteURL).href;
 const ogImageAlt = frontmatter?.imageAlt || frontmatter?.image?.alt || pageTitle;
-const heroImage = resolveImage(frontmatter?.image, frontmatter?.imageAlt || pageTitle);
-
-let prevPost = null;
-let nextPost = null;
-
-if (frontmatter) {
-	const currentIndex = allPosts.findIndex((p: any) => p.url === Astro.url.pathname);
-	if (currentIndex !== -1) {
-		nextPost = allPosts[currentIndex - 1]; // Newer post is earlier in sorted array
-		prevPost = allPosts[currentIndex + 1]; // Older post is later in sorted array
-	}
-}
 
 let readingTime = frontmatter?.readingTime;
 if (!readingTime && frontmatter?.file) {
@@ -65,6 +27,25 @@ if (!readingTime && frontmatter?.file) {
 		readingTime = Math.max(1, Math.ceil(wordCount / 200));
 	} catch (e) {}
 }
+
+const allPostsGlob = import.meta.glob('../pages/blog/*.md', { eager: true }) as Record<string, any>;
+const allPosts = Object.values(allPostsGlob)
+	.filter((p: any) => import.meta.env.DEV || !p.frontmatter?.draft)
+	.sort((a: any, b: any) => Date.parse(b.frontmatter.date) - Date.parse(a.frontmatter.date));
+
+let prevPost = null;
+let nextPost = null;
+if (frontmatter) {
+	const currentPath = Astro.url.pathname.replace(/\/$/, '');
+	const currentIndex = allPosts.findIndex((p: any) => {
+		const postPath = (p.url || '').replace(/\/$/, '');
+		return postPath === currentPath;
+	});
+	if (currentIndex !== -1) {
+		nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+		prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+	}
+}
 ---
 
 <!doctype html>
@@ -72,18 +53,18 @@ if (!readingTime && frontmatter?.file) {
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf8f5" />
 		<link rel="canonical" href={canonicalURL} />
 		
-		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content={ogType} />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageUrl} />
 		{ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
-		<link rel="image_src" href={ogImageUrl} />
 
-		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content={canonicalURL} />
 		<meta name="twitter:title" content={pageTitle} />
@@ -92,732 +73,99 @@ if (!readingTime && frontmatter?.file) {
 		{ogImageAlt && <meta name="twitter:image:alt" content={ogImageAlt} />}
 		<meta name="twitter:creator" content="@hereticpleb" />
 
-		<!-- Theme & Author -->
 		<meta name="author" content="Pranav Desai" />
-		<meta name="theme-color" content="#000000" />
-		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" type="image/png" href="/favicon.png" />
+		<link rel="alternate" type="application/rss+xml" title="godObject" href={new URL("rss.xml", siteURL)} />
 
-		<meta name="generator" content={Astro.generator} />
-		<link rel="alternate" type="application/rss+xml" title="godObject" href={new URL("rss.xml", Astro.site || "https://godobject.dev")} />
-		<link rel="preload" href={geistSans400} as="font" type="font/woff2" crossorigin="anonymous" />
-		<link rel="preload" href={geistSans700} as="font" type="font/woff2" crossorigin="anonymous" />
-		<title>{pageTitle}</title>
-		<ClientRouter fallback="animate" />
-		<script is:inline>
-			function applyTheme() {
-				const theme = (() => {
-					if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-						return localStorage.getItem('theme');
-					}
-					if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-						return 'light';
-					}
-					return 'dark';
-				})();
-				if (theme === 'light') {
-					document.documentElement.classList.add('light-theme');
-					const metaTheme = document.querySelector('meta[name="theme-color"]');
-					if (metaTheme) metaTheme.setAttribute('content', '#faf8f5');
-				} else {
-					document.documentElement.classList.remove('light-theme');
-					const metaTheme = document.querySelector('meta[name="theme-color"]');
-					if (metaTheme) metaTheme.setAttribute('content', '#000000');
-				}
-			}
-			applyTheme();
-			document.addEventListener('astro:after-swap', applyTheme);
-		</script>
+		<title>{isHome ? 'godObject · Pranav Desai' : `${pageTitle} · godObject`}</title>
 	</head>
 	<body>
 		<a href="#main-content" class="skip-link">Skip to content</a>
-		<div id="progress-bar"></div>
-		<main id="main-content" transition:animate={fade({ duration: '0.3s' })}>
-			<nav class="site-nav">
-				<div class="site-nav-brand">
-					<a href="/">godObject</a>
+
+		<main id="main-content">
+			<header class="site-header">
+				<div class="site-brand-group">
+					<a href="/" class="site-brand">godObject</a>
+					<span class="site-byline">· by Pranav Desai</span>
 				</div>
-				<div class="site-nav-actions">
-					<div class="nav-icon-group social-nav-group">
-						<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
-							<Fragment set:html={githubIcon} />
-						</a>
-						<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-							<Fragment set:html={linkedinIcon} />
-						</a>
-						<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X" title="Twitter / X">
-							<Fragment set:html={twitterIcon} />
-						</a>
-						<a href="mailto:hereticplebeian@gmail.com" aria-label="Email" title="Email">
-							<Fragment set:html={emailIcon} />
-						</a>
-					</div>
-					<span class="nav-divider" aria-hidden="true"></span>
-					<div class="nav-icon-group utility-nav-group">
-						<a href="/rss.xml" class="rss-icon" aria-label="RSS Feed" title="RSS Feed">
-							<Fragment set:html={rssIcon} />
-						</a>
-						<button id="search-toggle" type="button" aria-label="Search articles" title="Search articles (Cmd/Ctrl + K)">
-							<Fragment set:html={searchIcon} />
-							<span class="search-key-hint"><kbd>⌘</kbd>&nbsp;K</span>
-						</button>
-						<button id="theme-toggle" type="button" aria-label="Toggle light/dark mode" title="Toggle theme">
-							<span class="sun-icon"><Fragment set:html={sunIcon} /></span>
-							<span class="moon-icon"><Fragment set:html={moonIcon} /></span>
-						</button>
-					</div>
-				</div>
-			</nav>
-			
+				<nav class="site-nav-links" aria-label="Main navigation">
+					<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">GitHub</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer">X</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="/rss.xml">RSS</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="/privacy">Privacy</a>
+				</nav>
+			</header>
+
 			{frontmatter && (
-				<header class={`article-header ${heroImage ? 'has-hero-image' : ''}`}>
-					{heroImage && (
-						<div class="article-hero-bg" aria-hidden="true">
-							{heroImage.imageMetadata ? (
-								<Image
-									src={heroImage.imageMetadata}
-									alt=""
-									loading="eager"
-									fetchpriority="high"
-									decoding="async"
-									width={1280}
-									height={720}
-								/>
-							) : (
-								<Image
-									src={heroImage.src}
-									alt=""
-									loading="eager"
-									fetchpriority="high"
-									decoding="async"
-									width={1280}
-									height={720}
-								/>
-							)}
-							<div class="article-hero-overlay"></div>
-						</div>
-					)}
-					<div class="article-header-inner">
-						<h1>
-							{frontmatter.title}
-							{frontmatter.draft && <span class="draft-badge">Draft</span>}
-						</h1>
-						<div class="article-header-meta">
-							{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-							{readingTime && <span> • {readingTime} min read</span>}
-						</div>
+				<nav aria-label="Breadcrumb">
+					<a href="/" class="back-link">← All posts</a>
+				</nav>
+			)}
+
+			{frontmatter && (
+				<header class="article-header">
+					<h1 class="article-title">
+						{frontmatter.title}
+						{frontmatter.draft && <span class="draft-badge">Draft</span>}
+					</h1>
+					<div class="article-meta">
+						<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">Pranav Desai</a>
+						<span>·</span>
+						<time datetime={new Date(frontmatter.date).toISOString()}>
+							{new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+						</time>
+						{readingTime && (
+							<>
+								<span>·</span>
+								<span>{readingTime} min read</span>
+							</>
+						)}
 					</div>
 				</header>
 			)}
 
-			<div class="article-content">
-				{frontmatter && headings && headings.length > 0 && (
-					<>
-						<details class="toc-mobile" id="mobile-toc">
-							<summary><h2>contents</h2></summary>
-							<ul class="toc-list">
-								{headings.filter((h: any) => h.depth > 1).map((h: any) => (
-									<li class={`depth-${h.depth}`}>
-										<a href={`#${h.slug}`}>{h.text}</a>
-									</li>
-								))}
-							</ul>
-						</details>
-
-						<aside class="toc-tablet" aria-label="Table of contents">
-							<h2>contents</h2>
-							<ul class="toc-list">
-								{headings.filter((h: any) => h.depth > 1).map((h: any) => (
-									<li class={`depth-${h.depth}`}>
-										<a href={`#${h.slug}`}>{h.text}</a>
-									</li>
-								))}
-							</ul>
-						</aside>
-					</>
-				)}
+			<article class="article-content">
 				<slot />
-				
-				{frontmatter && (
-					<div class="post-footer-links">
-						<hr />
-						<p class="post-footer-prompt">Enjoyed this post?</p>
-						<div class="post-footer-rss-wrapper">
-							<a href="/rss.xml" class="post-footer-rss" aria-label="Subscribe via RSS" title="RSS Feed">
-								<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M4 11a9 9 0 0 1 9 9"></path>
-									<path d="M4 4a16 16 0 0 1 16 16"></path>
-									<circle cx="5" cy="19" r="1"></circle>
-								</svg>
-								<span>Subscribe via RSS</span>
-							</a>
-						</div>
-						<div class="footer-social-container">
-							<span>Follow along:</span>
-							<div class="footer-social-links">
-								<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">GitHub</a>
-								<span class="footer-social-bullet">&bull;</span>
-								<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-								<span class="footer-social-bullet">&bull;</span>
-								<a href="https://x.com/hereticpleb" target="_blank" rel="noopener noreferrer">Twitter</a>
-								<span class="footer-social-bullet">&bull;</span>
-								<a href="mailto:hereticplebeian@gmail.com">Email</a>
-							</div>
-						</div>
-					</div>
-				)}
+			</article>
 
-				{frontmatter && (prevPost || nextPost) && (
-					<div class="post-navigation">
-						<hr />
-						<div class="nav-links">
-							{prevPost && (
-								<a href={prevPost.url} class="nav-prev">
-									<span class="nav-label">←&nbsp;Previous Article</span>
-									<span class="nav-title">{prevPost.frontmatter.title}</span>
-								</a>
-							)}
-							{nextPost && (
-								<a href={nextPost.url} class="nav-next">
-									<span class="nav-label">Next Article&nbsp;→</span>
-									<span class="nav-title">{nextPost.frontmatter.title}</span>
-								</a>
-							)}
-						</div>
-					</div>
-				)}
-			</div>
-
-			{frontmatter && headings && headings.length > 0 && (
-				<aside class="toc-desktop">
-					<h2>Contents</h2>
-					<ul class="toc-list">
-						{headings.filter((h: any) => h.depth > 1).map((h: any) => (
-							<li class={`depth-${h.depth}`}>
-								<a href={`#${h.slug}`}>{h.text}</a>
-							</li>
-						))}
-					</ul>
-				</aside>
+			{frontmatter && (prevPost || nextPost) && (
+				<nav class="post-nav" aria-label="Adjacent posts">
+					{prevPost ? (
+						<a href={prevPost.url} class="post-nav-item post-nav-prev">
+							<span class="post-nav-dir">← older</span>
+							<span class="post-nav-title">{prevPost.frontmatter.title}</span>
+						</a>
+					) : <div class="post-nav-placeholder" />}
+					{nextPost ? (
+						<a href={nextPost.url} class="post-nav-item post-nav-next">
+							<span class="post-nav-dir">newer →</span>
+							<span class="post-nav-title">{nextPost.frontmatter.title}</span>
+						</a>
+					) : <div class="post-nav-placeholder" />}
+				</nav>
 			)}
 
-			{Astro.url.pathname !== '/privacy' && Astro.url.pathname !== '/privacy/' && (
-				<footer class="site-footer">
-					<a href="/privacy">Privacy Policy</a>
-				</footer>
-			)}
-		</main>
-
-		<button id="back-to-top" type="button" aria-label="Back to top">
-			<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-		</button>
-
-		<div id="search-modal" class="search-modal hidden" aria-modal="true" role="dialog">
-			<div class="search-modal-content">
-				<div class="search-input-wrapper">
-					<svg class="search-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-					<input type="search" id="search-input" placeholder="Search articles…" aria-label="Search articles" autocomplete="off" spellcheck="false" />
-					<button id="search-close-btn" type="button" class="search-close-btn" aria-label="Close search" title="Close search (ESC)">
-						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-					</button>
+			<footer class="site-footer">
+				<nav class="footer-links" aria-label="Footer navigation">
+					<a href="https://github.com/PranavDesai-Git" target="_blank" rel="noopener noreferrer">GitHub</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="mailto:hereticplebeian@gmail.com">Email</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="https://www.linkedin.com/in/pranav-desai-542961385/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="/rss.xml">RSS</a>
+					<span class="bullet" aria-hidden="true">·</span>
+					<a href="/privacy">Privacy</a>
+				</nav>
+				<div class="footer-copyright">
+					&copy; {new Date().getFullYear()} Pranav Desai
 				</div>
-				<ul id="search-results" aria-live="polite" role="status"></ul>
-			</div>
-		</div>
-
-		<script>
-			document.addEventListener('astro:page-load', () => {
-			const progressBar = document.getElementById('progress-bar');
-			const topBtn = document.getElementById('back-to-top');
-
-			window.addEventListener('scroll', () => {
-				// Progress Bar
-				const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-				const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-				const scrolled = (winScroll / height) * 100;
-				if (progressBar) progressBar.style.width = scrolled + '%';
-
-				// Back to top button
-				if (winScroll > 500) {
-					if (topBtn) {
-						topBtn.style.opacity = '0.7';
-						topBtn.style.pointerEvents = 'auto';
-					}
-				} else {
-					if (topBtn) {
-						topBtn.style.opacity = '0';
-						topBtn.style.pointerEvents = 'none';
-					}
-				}
-			});
-
-			if (topBtn) {
-				topBtn.addEventListener('click', () => {
-					window.scrollTo({ top: 0, behavior: 'smooth' });
-				});
-			}
-
-			const themeToggle = document.getElementById('theme-toggle');
-			if (themeToggle) {
-				themeToggle.addEventListener('click', () => {
-					document.documentElement.classList.add('theme-transition');
-					document.documentElement.classList.toggle('light-theme');
-					const isLight = document.documentElement.classList.contains('light-theme');
-					localStorage.setItem('theme', isLight ? 'light' : 'dark');
-					const metaTheme = document.querySelector('meta[name="theme-color"]');
-					if (metaTheme) metaTheme.setAttribute('content', isLight ? '#faf8f5' : '#000000');
-					setTimeout(() => {
-						document.documentElement.classList.remove('theme-transition');
-					}, 300);
-				});
-			}
-				// Scroll-Spy TOC
-				const headings = document.querySelectorAll('.article-content h2, .article-content h3');
-				const tocLinks = document.querySelectorAll('.toc-list a');
-				if (headings.length && tocLinks.length) {
-					const observer = new IntersectionObserver(entries => {
-						entries.forEach(entry => {
-							if (entry.isIntersecting) {
-								tocLinks.forEach(link => {
-									link.classList.remove('active');
-									if (link.getAttribute('href') === '#' + entry.target.id) {
-										link.classList.add('active');
-									}
-								});
-							}
-						});
-					}, { rootMargin: '-10% 0px -80% 0px' });
-					headings.forEach(h => observer.observe(h));
-				}
-
-				// Language Badge & Copy Button for Code Blocks
-				const preBlocks = document.querySelectorAll('pre');
-				preBlocks.forEach(pre => {
-					if (pre.querySelector('.copy-btn')) return;
-					pre.style.position = 'relative';
-
-					// Language Badge
-					const lang = pre.getAttribute('data-language') 
-						|| pre.querySelector('code')?.className.match(/language-(\w+)/)?.[1] 
-						|| pre.className.match(/language-(\w+)/)?.[1] 
-						|| '';
-					if (lang && lang.toLowerCase() !== 'plaintext' && lang.toLowerCase() !== 'text') {
-						const badge = document.createElement('span');
-						badge.className = 'code-lang-badge';
-						badge.textContent = lang.toUpperCase();
-						pre.appendChild(badge);
-					}
-
-					// Copy Button
-					const btn = document.createElement('button');
-					btn.className = 'copy-btn';
-					btn.textContent = 'Copy';
-					btn.addEventListener('click', () => {
-						const code = pre.querySelector('code')?.innerText || pre.innerText;
-						navigator.clipboard.writeText(code).then(() => {
-							btn.textContent = 'Copied!';
-							setTimeout(() => btn.textContent = 'Copy', 2000);
-						});
-					});
-					pre.appendChild(btn);
-				});
-
-				// Heading Anchor Permalinks
-				const articleHeadings = document.querySelectorAll('.article-content h2[id], .article-content h3[id]');
-				articleHeadings.forEach((h: any) => {
-					if (h.querySelector('.heading-anchor')) return;
-					const anchor = document.createElement('a');
-					anchor.className = 'heading-anchor';
-					anchor.href = '#' + h.id;
-					anchor.setAttribute('aria-label', `Direct link to section: ${h.innerText.replace(/#/g, '').trim()}`);
-					anchor.textContent = '#';
-					anchor.addEventListener('click', (e) => {
-						e.preventDefault();
-						const permalink = window.location.origin + window.location.pathname + '#' + h.id;
-						history.pushState(null, '', '#' + h.id);
-						navigator.clipboard.writeText(permalink).then(() => {
-							anchor.classList.add('copied');
-							setTimeout(() => anchor.classList.remove('copied'), 1500);
-						});
-						h.scrollIntoView({ behavior: 'smooth' });
-					});
-					h.appendChild(anchor);
-				});
-
-				// Fullscreen Image Click & Keyboard Lightbox (only for article content images, not linked thumbnails)
-				const images = document.querySelectorAll('.article-content img');
-				images.forEach(img => {
-					if (img.closest('a') || img.closest('.post-thumbnail')) return;
-
-					img.style.cursor = 'zoom-in';
-					img.setAttribute('tabindex', '0');
-					img.setAttribute('role', 'button');
-					img.setAttribute('aria-label', 'View image fullscreen: ' + (img.alt || 'article image'));
-
-					const openLightbox = () => {
-						document.body.style.overflow = 'hidden';
-						const overlay = document.createElement('div');
-						overlay.style.position = 'fixed';
-						overlay.style.top = '0';
-						overlay.style.left = '0';
-						overlay.style.width = '100vw';
-						overlay.style.height = '100vh';
-						overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-						overlay.style.zIndex = '9999';
-						overlay.style.display = 'flex';
-						overlay.style.justifyContent = 'center';
-						overlay.style.alignItems = 'center';
-						
-						const closeBtn = document.createElement('button');
-						closeBtn.innerHTML = '&times;';
-						closeBtn.style.position = 'absolute';
-						closeBtn.style.top = '20px';
-						closeBtn.style.right = '30px';
-						closeBtn.style.fontSize = '40px';
-						closeBtn.style.color = '#fff';
-						closeBtn.style.background = 'transparent';
-						closeBtn.style.border = 'none';
-						closeBtn.style.cursor = 'pointer';
-						closeBtn.style.lineHeight = '1';
-						closeBtn.style.padding = '10px';
-						closeBtn.style.zIndex = '10000';
-						closeBtn.setAttribute('aria-label', 'Close fullscreen image');
-						
-						const zoomInBtn = document.createElement('button');
-						zoomInBtn.innerHTML = '+';
-						zoomInBtn.style.position = 'absolute';
-						zoomInBtn.style.top = '20px';
-						zoomInBtn.style.right = '110px';
-						zoomInBtn.style.fontSize = '40px';
-						zoomInBtn.style.color = '#fff';
-						zoomInBtn.style.background = 'transparent';
-						zoomInBtn.style.border = 'none';
-						zoomInBtn.style.cursor = 'pointer';
-						zoomInBtn.style.lineHeight = '1';
-						zoomInBtn.style.padding = '10px';
-						zoomInBtn.style.zIndex = '10000';
-						zoomInBtn.setAttribute('aria-label', 'Zoom in');
-
-						const zoomOutBtn = document.createElement('button');
-						zoomOutBtn.innerHTML = '&minus;';
-						zoomOutBtn.style.position = 'absolute';
-						zoomOutBtn.style.top = '20px';
-						zoomOutBtn.style.right = '70px';
-						zoomOutBtn.style.fontSize = '40px';
-						zoomOutBtn.style.color = '#fff';
-						zoomOutBtn.style.background = 'transparent';
-						zoomOutBtn.style.border = 'none';
-						zoomOutBtn.style.cursor = 'pointer';
-						zoomOutBtn.style.lineHeight = '1';
-						zoomOutBtn.style.padding = '10px';
-						zoomOutBtn.style.zIndex = '10000';
-						zoomOutBtn.setAttribute('aria-label', 'Zoom out');
-						
-						const clone = document.createElement('img');
-						clone.src = img.src;
-						clone.alt = img.alt || 'Fullscreen view';
-						clone.style.maxWidth = '95vw';
-						clone.style.maxHeight = '95vh';
-						clone.style.objectFit = 'contain';
-						clone.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
-						clone.style.cursor = 'grab';
-						clone.style.transition = 'transform 0.1s ease-out';
-						
-						overlay.appendChild(zoomInBtn);
-						overlay.appendChild(zoomOutBtn);
-						overlay.appendChild(closeBtn);
-						overlay.appendChild(clone);
-						document.body.appendChild(overlay);
-						
-						let scale = 1;
-						let isDragging = false;
-						let startX = 0, startY = 0, translateX = 0, translateY = 0;
-						
-						const updateTransform = () => {
-							clone.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-						};
-
-						zoomInBtn.addEventListener('click', (e) => {
-							e.stopPropagation();
-							scale = Math.min(scale + 0.5, 10);
-							updateTransform();
-						});
-
-						zoomOutBtn.addEventListener('click', (e) => {
-							e.stopPropagation();
-							scale = Math.max(scale - 0.5, 0.5);
-							updateTransform();
-						});
-						
-						clone.addEventListener('wheel', (e) => {
-							e.preventDefault();
-							scale += e.deltaY * -0.005;
-							scale = Math.min(Math.max(0.5, scale), 10);
-							updateTransform();
-						});
-						
-						// Mouse Drag
-						clone.addEventListener('mousedown', (e) => {
-							e.preventDefault();
-							isDragging = true;
-							startX = e.clientX - translateX;
-							startY = e.clientY - translateY;
-							clone.style.cursor = 'grabbing';
-							clone.style.transition = 'none';
-						});
-						
-						window.addEventListener('mouseup', () => {
-							if (isDragging) {
-								isDragging = false;
-								clone.style.cursor = 'grab';
-								clone.style.transition = 'transform 0.1s ease-out';
-							}
-						});
-						
-						window.addEventListener('mousemove', (e) => {
-							if (!isDragging) return;
-							e.preventDefault();
-							translateX = e.clientX - startX;
-							translateY = e.clientY - startY;
-							updateTransform();
-						});
-
-						// Touch Drag (Mobile / Tablet)
-						clone.addEventListener('touchstart', (e) => {
-							if (e.touches.length === 1) {
-								isDragging = true;
-								startX = e.touches[0].clientX - translateX;
-								startY = e.touches[0].clientY - translateY;
-								clone.style.transition = 'none';
-							}
-						}, { passive: true });
-
-						window.addEventListener('touchend', () => {
-							if (isDragging) {
-								isDragging = false;
-								clone.style.transition = 'transform 0.1s ease-out';
-							}
-						});
-
-						window.addEventListener('touchmove', (e) => {
-							if (!isDragging || e.touches.length !== 1) return;
-							translateX = e.touches[0].clientX - startX;
-							translateY = e.touches[0].clientY - startY;
-							updateTransform();
-						}, { passive: true });
-
-						// Close Lightbox on Esc Key
-						const closeLightbox = () => {
-							if (document.body.contains(overlay)) {
-								document.body.removeChild(overlay);
-								window.removeEventListener('keydown', handleEscKey);
-								document.body.style.overflow = '';
-							}
-						};
-
-						const handleEscKey = (e) => {
-							if (e.key === 'Escape') {
-								closeLightbox();
-							}
-						};
-						window.addEventListener('keydown', handleEscKey);
-						
-						overlay.addEventListener('click', (e) => {
-							if (e.target === overlay || e.target === closeBtn) {
-								closeLightbox();
-							}
-						});
-					};
-
-					img.addEventListener('click', openLightbox);
-					img.addEventListener('keydown', (e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							e.preventDefault();
-							openLightbox();
-						}
-					});
-				});
-
-				// Quick Search Modal & Trigger
-				let searchData = null;
-				const searchModal = document.getElementById('search-modal');
-				const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
-				const searchResults = document.getElementById('search-results');
-				const searchToggle = document.getElementById('search-toggle');
-				const searchCloseBtn = document.getElementById('search-close-btn');
-
-				const openSearchModal = () => {
-					if (searchModal) {
-						document.body.style.overflow = 'hidden';
-						searchModal.classList.remove('hidden');
-						setTimeout(() => {
-							if (searchInput) {
-								searchInput.focus();
-								searchInput.select();
-							}
-						}, 30);
-						if (!searchData) {
-							fetch('/search.json').then(res => res.json()).then(data => searchData = data);
-						}
-					}
-				};
-
-				const closeSearchModal = () => {
-					if (searchModal) {
-						searchModal.classList.add('hidden');
-						document.body.style.overflow = '';
-						if (searchInput) {
-							searchInput.value = '';
-						}
-						if (searchResults) {
-							searchResults.innerHTML = '';
-						}
-					}
-				};
-
-				if (searchToggle) {
-					searchToggle.addEventListener('click', (e) => {
-						e.preventDefault();
-						openSearchModal();
-					});
-				}
-
-				if (searchCloseBtn) {
-					searchCloseBtn.addEventListener('click', (e) => {
-						e.preventDefault();
-						closeSearchModal();
-					});
-				}
-
-				const handleKeydown = (e) => {
-					if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-						e.preventDefault();
-						if (searchModal) {
-							if (searchModal.classList.contains('hidden')) {
-								openSearchModal();
-							} else {
-								closeSearchModal();
-							}
-						}
-					}
-					if (e.key === 'Escape' && searchModal && !searchModal.classList.contains('hidden')) {
-						closeSearchModal();
-					}
-					if (e.key === 'Tab' && searchModal && !searchModal.classList.contains('hidden')) {
-						const focusables = Array.from(searchModal.querySelectorAll('input, button, a[href]')) as HTMLElement[];
-						if (focusables.length > 0) {
-							const first = focusables[0];
-							const last = focusables[focusables.length - 1];
-							if (e.shiftKey && document.activeElement === first) {
-								e.preventDefault();
-								last.focus();
-							} else if (!e.shiftKey && document.activeElement === last) {
-								e.preventDefault();
-								first.focus();
-							}
-						}
-					}
-				};
-
-				document.removeEventListener('keydown', handleKeydown);
-				document.addEventListener('keydown', handleKeydown);
-
-				if (searchModal) {
-					searchModal.addEventListener('click', (e) => {
-						if (e.target === searchModal) closeSearchModal();
-					});
-				}
-
-				const escapeHtml = (str: string) => {
-					return str
-						.replace(/&/g, '&amp;')
-						.replace(/</g, '&lt;')
-						.replace(/>/g, '&gt;')
-						.replace(/"/g, '&quot;')
-						.replace(/'/g, '&#039;');
-				};
-
-				const getGrepSnippet = (content: string, rawQuery: string) => {
-					if (!content || !rawQuery) return '';
-					const plainText = content
-						.replace(/```[\s\S]*?```/g, '')
-						.replace(/`([^`]+)`/g, '$1')
-						.replace(/!\[.*?\]\(.*?\)/g, '')
-						.replace(/\[([^\]]+)\]\(.*?\)/g, '$1')
-						.replace(/#{1,6}\s+/g, '')
-						.replace(/[*_~`]/g, '')
-						.replace(/\s+/g, ' ');
-
-					const lowerText = plainText.toLowerCase();
-					const lowerQuery = rawQuery.toLowerCase();
-					const matchIndex = lowerText.indexOf(lowerQuery);
-
-					if (matchIndex === -1) return '';
-
-					const start = Math.max(0, matchIndex - 45);
-					const end = Math.min(plainText.length, matchIndex + rawQuery.length + 65);
-					let snippet = plainText.slice(start, end).trim();
-
-					if (start > 0) snippet = '…' + snippet;
-					if (end < plainText.length) snippet = snippet + '…';
-
-					return snippet;
-				};
-
-				const highlightMatches = (text: string, rawQuery: string) => {
-					if (!text || !rawQuery) return escapeHtml(text || '');
-					const escapedText = escapeHtml(text);
-					const escapedQuery = rawQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-					const regex = new RegExp(`(${escapedQuery})`, 'gi');
-					return escapedText.replace(regex, '<mark class="search-highlight">$1</mark>');
-				};
-
-				if (searchInput && searchResults) {
-					searchInput.addEventListener('input', (e) => {
-						const rawQuery = (e.target as HTMLInputElement).value.trim();
-						if (!rawQuery) {
-							searchResults.innerHTML = '';
-							return;
-						}
-						const q = rawQuery.toLowerCase();
-						const results = (searchData || []).filter(post => {
-							const titleMatch = post.title && post.title.toLowerCase().includes(q);
-							const descMatch = post.description && post.description.toLowerCase().includes(q);
-							const contentMatch = post.content && post.content.toLowerCase().includes(q);
-							return titleMatch || descMatch || contentMatch;
-						});
-
-						if (results.length === 0) {
-							searchResults.innerHTML = `<li class="search-no-results">No matches found for "${escapeHtml(rawQuery)}"</li>`;
-							return;
-						}
-
-						searchResults.innerHTML = results.map(post => {
-							const snippet = getGrepSnippet(post.content || '', rawQuery);
-							const titleHtml = highlightMatches(post.title || 'Untitled', rawQuery);
-							const dateStr = post.date ? new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-							
-							return `
-								<li>
-									<a href="${post.url}">
-										<div class="search-result-meta">
-											<span class="search-title">${titleHtml}</span>
-											${dateStr ? `<span class="search-date-badge">${dateStr}</span>` : ''}
-										</div>
-										${snippet 
-											? `<p class="search-grep-snippet">${highlightMatches(snippet, rawQuery)}</p>` 
-											: (post.description ? `<p class="search-desc">${highlightMatches(post.description, rawQuery)}</p>` : '')
-										}
-									</a>
-								</li>
-							`;
-						}).join('');
-					});
-				}
-
-
-			});
-		</script>
+			</footer>
+		</main>
 	</body>
 </html>
