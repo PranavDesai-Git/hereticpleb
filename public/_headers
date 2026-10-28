@@ -1,14 +1,48 @@
+# Global defaults (HTML pages & root)
 /*
   Access-Control-Allow-Origin: *
-  Access-Control-Allow-Methods: GET, POST, OPTIONS, HEAD
-  Access-Control-Allow-Headers: Content-Type, signature-agent, X-Requested-With, Authorization
-  Cache-Control: public, max-age=0, s-maxage=31536000, must-revalidate
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Cache-Control: public, max-age=0, must-revalidate
+  Cloudflare-CDN-Cache-Control: max-age=31536000, stale-while-revalidate=86400
+  CDN-Cache-Control: max-age=31536000, stale-while-revalidate=86400
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
+# Astro hashed static assets (immutable, 1 year cache)
 /_astro/*
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=31536000, immutable
+  Cloudflare-CDN-Cache-Control: max-age=31536000
+
+# Static root media & icons (favicons, OpenGraph image)
+/favicon.svg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=2592000
+
+/og-image.jpg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=2592000
+
+# Feeds and search/sitemap indices (1 hour browser cache, 1 day edge cache)
+/rss.xml
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=86400
+
+/sitemap-index.xml
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=86400
+
+/sitemap-0.xml
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=86400
+
+/llms.txt
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=86400
+
+/search.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cloudflare-CDN-Cache-Control: max-age=86400
